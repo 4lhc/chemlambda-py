@@ -25,6 +25,7 @@ port_size = 1
 mid_port_size = 2
 main_atom_size = 4
 
+
 atom_color_size_dict = { "mi": { "color": in_col, "size": mid_port_size},
                          "li": { "color": in_col, "size": port_size},
                          "ri": { "color": in_col, "size": port_size},
