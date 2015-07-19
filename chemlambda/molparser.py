@@ -8,29 +8,16 @@
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 18:09:22 IST
 #  ver    : 
+#
+# A python port of chemlambda-gui by chorasimilarity (Marius Buliga, http://chorasimilarity.wordpress.com/)
+#
 
 # Parse mol files based on rules from topology.py
 
-
-def addTargets(d, mid):
-    """ addTargets(mol_dict, last_mol_id)
-        add targets for ports
+def addFreenodes(d, mid, mol_ids):
+    """ addFreenodes(mol_dict, last_mol_id, unmatched_node_list)
         Create FRIN, FROUT and their ports
     """
-    #create a list of ports
-    mol_ids = [ mol for mol in list(d.keys()) if 'name' in d[mol]]
-    #list of ports that will find mathces
-    matched_ports = [] 
-    for i, mol in enumerate(mol_ids):
-        for t_mol in mol_ids[i+1:]:
-            if d[mol]['name'] == d[t_mol]['name']:
-                d[mol]['target'].append(t_mol)
-                matched_ports.append(mol)
-                matched_ports.append(t_mol)
-
-    #update mol_ids, remove matched_ports
-    mol_ids = [ mol for mol in mol_ids if mol not in matched_ports ]
-    #FRIN, FROUT and ports + targets
     for mol in mol_ids:
         port_id = str(mid) + "_0"
         FR_id = str(mid)
@@ -43,6 +30,31 @@ def addTargets(d, mid):
         mid += 1
 
     return d
+
+def addTargets(d, mid):
+    """ addTargets(mol_dict, last_mol_id)
+        add targets for ports
+    """
+    #create a list of ports
+    mol_ids = [ mol for mol in list(d.keys()) if 'name' in d[mol]]
+    #list of ports that will find mathces
+    matched_ports = [] 
+    for i, mol in enumerate(mol_ids):
+        for t_mol in mol_ids[i+1:]:
+            if d[mol]['name'] == d[t_mol]['name']:
+                if d[mol]['type'][-1] == d[t_mol]['type'][-1]:
+                    #error checking for wrong ports in mol files
+                    #so that 'in' port and 'in' port do not link
+                    print("""Error in mol file\nCan't link ports \n{}: {}\n{}: {}.
+                            """.format(mol, d[mol], t_mol, d[t_mol]))
+                d[mol]['target'].append(t_mol)
+                matched_ports.append(mol)
+                matched_ports.append(t_mol)
+    
+    #update mol_ids, remove matched_ports
+    mol_ids = [ mol for mol in mol_ids if mol not in matched_ports ]
+    #FRIN, FROUT and ports + targets
+    return addFreenodes(d, mid, mol_ids)
 
 
 
