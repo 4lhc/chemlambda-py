@@ -43,12 +43,12 @@ def add_frin_frout():
             #free port exist
             uid = at[0] +"_" + str(i)
             puid = uid + "_0"
-            dict_atoms[uid] = atoms.Atom(uid=uid, atom=at[0], targets = [])
+            dict_atoms[uid] = atoms.Atom( uid=uid, atom=at[0], targets = [])
             dict_ports[puid] = atoms.Port( uid=puid, atom=at[1],
                      parent_atom=dict_atoms[uid], free=0)
             #adding targets
             dict_atoms[uid].targets.append(dict_ports[puid])
-            p.addTarget(dict_ports[puid])
+            p.add_target(dict_ports[puid])
             p.free = 0
             i += 1
 
@@ -58,7 +58,7 @@ def find_matched():
     find LP from matched ports
     """
     L = list(dict_ports.values())
-    matched_ports.extend((p1.setMatchedport(p2) 
+    matched_ports.extend((p1.set_matched_port(p2) 
             for (i, p1) in enumerate(L) 
             for p2 in L[i+1:] 
             if p1.port_name == p2.port_name))
@@ -69,7 +69,7 @@ def read_mol_file(mol_file):
         read_mol_file( str or list of lines)
         Reads the mol file, parses it and populates dict_atoms and dict_ports
     """
-    parse_data = mp.parseMolfile(mol_file)
+    parse_data = mp.parse_mol_file(mol_file)
 
     for i, mol in enumerate(parse_data):
         uid = mol['atom'] + "_" + str(i)
@@ -92,12 +92,43 @@ find_matched()
 add_frin_frout()
 
 
-#print(dict_atoms['L_0'].__dict__)
-#print(dict_ports['L_0_0'].__dict__)
-#print(dict_atoms)
+hl = '-'
+vl = '│'
+print(hl*71)
+print( " {:<10} {} {:<10} {} {:<10} {} {:>30} {}".format('uid', vl, 'atom', vl, 'lno', vl, 'targets', vl))
+print(hl*71)
 for i in list(dict_atoms.values()):
-    print( "\n{}".format(i.__dict__))
+    d = i.__dict__
+    uid = d['uid']
+    lno = d['lno']
+    if not lno: lno = '---'
+    atom = d['atom']
+    targets = ', '.join([ p.uid for p in d['targets'] ])
+    print( " {:<10} {} {:<10} {} {:^10} {} {:>30} {}".format(uid, vl, atom,
+        vl, lno, vl, targets, vl))
+
+print(hl*71,'\n')
+
+print(hl*74)
+print( " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}".format('uid', vl, 'atom', vl,
+    'parent', vl, 'port_name', vl, 'targets', vl))
+print(hl*74)
 for i in list(dict_ports.values()):
-    print( "\n{}".format(i.__dict__))
-print()
-print(matched_ports)
+    d = i.__dict__
+    uid = d['uid']
+    atom = d['atom']
+    parent = d['parent_atom'].uid
+    port_name = d['port_name']
+    targets = ', '.join([ p.uid for p in d['targets'] ])
+    print( " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}".format(uid, vl, atom, vl,
+    parent, vl, port_name, vl, targets, vl))
+    #print( " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>10} {}".format(uid, vl, atom, vl, parent, vl, port_name, vl, targets, vl))
+
+print(hl*74)
+
+matched_ports = set(matched_ports)
+try:
+    matched_ports.remove(None)
+except KeyError:
+    pass
+print([ (a.uid, b.uid) for (a, b) in matched_ports])
