@@ -77,11 +77,12 @@ class Atom:
 class Port(Atom):
     """
     """
-    def __init__(self, uid='', atom='', port_name='',  parent_atom=''):
+    def __init__(self, uid='', atom='', port_name='',  parent_atom='', free = 1):
         Atom.__init__(self, uid=uid, atom=atom, targets = [], sources = [])
         self.port_name = port_name
         self.parent_atom = parent_atom
         self.lno = self.parent_atom.lno
+        self.free = free
 
     def setPortnames(self):
         print('port_name already set: {}'.format(self.port_name))
@@ -96,9 +97,10 @@ class Port(Atom):
         Return parent atoms of both port atom
         """
         if self.atom[-1] == p2.atom[-1]:
-            print("port mismatch in mol file\n line {}"
+            print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
                     .format(self.parent_atom.lno))
             return None
+        self.free = p2.free = 0 #ready for Freenodes
         self.targets.append(p2)
         return (self.parent_atom, p2.parent_atom) 
 

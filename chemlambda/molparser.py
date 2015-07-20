@@ -39,7 +39,8 @@ def parseMolfile(mol_file):
             l = line.split()
             counter = [ all_names.count(i) for i in l[1:] ]
             if max(counter) > 2:
-                print("error in mol file\n->line {}: {} \n".format(i+1, line))
+                print("\033[91mError:\033[0m in mol file\nline \033[92m{}\033[0m:{}"
+                        .format(i+1, line))
             else:
                 mols.append({ "atom": l[0], "ports": l[1:], "lno":i+1})
         except IndexError:

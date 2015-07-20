@@ -23,20 +23,44 @@ mol_file = 'mol_files/test.mol'
 dict_atoms = {}  #dict of Atom objects { uid: Atom obj }
 dict_ports = {}
 
-def freeInOut():
+matched_ports = []
+
+
+def addFreeInOut():
     """
-    Create FROUT, FRIN and thier ports
+    Create FROUT, FRIN and their ports
     """
+    l = list(dict_ports.values())
+    i = list(dict_atoms.keys()).__len__()
+
+    d = { 'i': [ "FRIN", "fo" ],
+            'o': [ "FROUT", "fi"] 
+            }
+
+    for p in l:
+        at = d[p.atom[-1]]
+        if p.free == 1:
+            #free port exist
+            uid = at[0] +"_" + str(i)
+            puid = uid + "_0"
+            dict_atoms[uid] = atoms.Atom(uid=uid, atom=at[0])
+            dict_ports[puid] = atoms.Port( uid=puid, atom=at[1],
+                     parent_atom=dict_atoms[uid], free=0)
+            #adding targets
+            dict_atoms[uid].addTarget(dict_ports[puid])
+            p.addTarget(dict_ports[puid])
+            p.free = 0
+
 
 def findMatched():
     """
     find LP from matched ports
     """
     l = list(dict_ports.values())
-    matched_ports = [ (p1.setMatchedport(p2)) 
+    matched_ports.extend((p1.setMatchedport(p2) 
             for (i, p1) in enumerate(l) 
             for p2 in l[i+1:] 
-            if p1.port_name == p2.port_name]
+            if p1.port_name == p2.port_name))
 
 
 def readMolfile(mol_file):
@@ -61,9 +85,18 @@ def readMolfile(mol_file):
                     port_name=port_name, parent_atom=dict_atoms[uid])
             dict_atoms[uid].targets.append(dict_ports[puid])
 
-    
-    
+
 readMolfile(mol_file)
-print(dict_atoms['L_0'].__dict__)
-print(dict_ports['L_0_0'].__dict__)
+findMatched()
+addFreeInOut()
+
+
+#print(dict_atoms['L_0'].__dict__)
+#print(dict_ports['L_0_0'].__dict__)
 #print(dict_atoms)
+for i in list(dict_atoms.values()):
+    print( "\n{}".format(i.__dict__))
+for i in list(dict_ports.values()):
+    print( "\n{}".format(i.__dict__))
+print()
+print(matched_ports)
