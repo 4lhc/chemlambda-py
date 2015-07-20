@@ -33,9 +33,7 @@ def add_frin_frout():
     L = list(dict_ports.values())
     i = list(dict_atoms.keys()).__len__()
 
-    d = { 'i': [ "FRIN", "fo" ],
-            'o': [ "FROUT", "fi"] 
-            }
+    d = { 'i': [ "FRIN", "fo" ], 'o': [ "FROUT", "fi"] }
 
     for p in L:
         at = d[p.atom[-1]]
@@ -46,8 +44,7 @@ def add_frin_frout():
             dict_atoms[uid] = atoms.Atom( uid=uid, atom=at[0], targets = [])
             dict_ports[puid] = atoms.Port( uid=puid, atom=at[1],
                      parent_atom=dict_atoms[uid], free=0)
-            #adding targets
-            dict_atoms[uid].targets.append(dict_ports[puid])
+            dict_atoms[uid].targets.append(dict_ports[puid]) #adding targets
             p.add_target(dict_ports[puid])
             p.free = 0
             i += 1
@@ -122,7 +119,6 @@ for i in list(dict_ports.values()):
     targets = ', '.join([ p.uid for p in d['targets'] ])
     print( " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}".format(uid, vl, atom, vl,
     parent, vl, port_name, vl, targets, vl))
-    #print( " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>10} {}".format(uid, vl, atom, vl, parent, vl, port_name, vl, targets, vl))
 
 print(hl*74)
 
