@@ -14,7 +14,44 @@
 
 # Parse mol files based on rules from topology.py
 
-def addFreenodes(d, mid, mol_ids):
+def parseMolfile(mol_file):
+    """
+    parseMolfile(mol_file | list_of_line)
+    if argument is a string it's treated as a file name and file is read
+    if argument is a list, it's treated as a list of lines
+    return [{ 'atom': 'L', 'ports': [a, b, c]}, ...]
+    """
+    mols = []
+
+    if mol_file.__class__ == str:
+        try:
+            with open(mol_file, 'r') as f:
+                mf = f.read().splitlines()    
+        except FileNotFoundError:
+            print("{} could not be read".format(mol_id))
+            return None
+    else:
+        mf = mol_file
+        
+    all_names = [ i for j in mf for i in j ]
+    for i, line in enumerate(mf):
+        try:
+            l = line.split()
+            counter = [ all_names.count(i) for i in l[1:] ]
+            if max(counter) > 2:
+                print("error in mol file\n->line {}: {} \n".format(i+1, line))
+            else:
+                mols.append({ "atom": l[0], "ports": l[1:]})
+        except IndexError:
+            #ignore empty lines
+            pass
+        except ValueError:
+            #ignore error raised by max() at empty lines
+            pass
+    return mols
+
+
+def XXXjjaddFreenodes(d, mid, mol_ids):
     """ addFreenodes(mol_dict, last_mol_id, unmatched_node_list)
         Create FRIN, FROUT and their ports
     """
@@ -31,7 +68,8 @@ def addFreenodes(d, mid, mol_ids):
 
     return d
 
-def addTargets(d, mid):
+
+def XXXXaddTargets(d, mid):
     """ addTargets(mol_dict, last_mol_id)
         add targets for ports
     """
@@ -57,11 +95,7 @@ def addTargets(d, mid):
     return addFreenodes(d, mid, mol_ids)
 
 
-
-
-
-
-def molParser(f, rules):
+def XXXmolParser(f, rules):
     """ molParser( mol_file_split_list, rules)
         Parses mol files line by line based on rules from topology.py
     """
@@ -85,8 +119,4 @@ def molParser(f, rules):
             pass
     #return mols
     return  addTargets(mols, mol_id)
-
-
-
-
 
