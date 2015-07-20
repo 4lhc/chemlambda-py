@@ -26,46 +26,47 @@ dict_ports = {}
 matched_ports = []
 
 
-def addFreeInOut():
+def add_frin_frout():
     """
     Create FROUT, FRIN and their ports
     """
-    l = list(dict_ports.values())
+    L = list(dict_ports.values())
     i = list(dict_atoms.keys()).__len__()
 
     d = { 'i': [ "FRIN", "fo" ],
             'o': [ "FROUT", "fi"] 
             }
 
-    for p in l:
+    for p in L:
         at = d[p.atom[-1]]
         if p.free == 1:
             #free port exist
             uid = at[0] +"_" + str(i)
             puid = uid + "_0"
-            dict_atoms[uid] = atoms.Atom(uid=uid, atom=at[0])
+            dict_atoms[uid] = atoms.Atom(uid=uid, atom=at[0], targets = [])
             dict_ports[puid] = atoms.Port( uid=puid, atom=at[1],
                      parent_atom=dict_atoms[uid], free=0)
             #adding targets
-            dict_atoms[uid].addTarget(dict_ports[puid])
+            dict_atoms[uid].targets.append(dict_ports[puid])
             p.addTarget(dict_ports[puid])
             p.free = 0
+            i += 1
 
 
-def findMatched():
+def find_matched():
     """
     find LP from matched ports
     """
-    l = list(dict_ports.values())
+    L = list(dict_ports.values())
     matched_ports.extend((p1.setMatchedport(p2) 
-            for (i, p1) in enumerate(l) 
-            for p2 in l[i+1:] 
+            for (i, p1) in enumerate(L) 
+            for p2 in L[i+1:] 
             if p1.port_name == p2.port_name))
 
 
-def readMolfile(mol_file):
+def read_mol_file(mol_file):
     """
-        readMolfile( str or list of lines)
+        read_mol_file( str or list of lines)
         Reads the mol file, parses it and populates dict_atoms and dict_ports
     """
     parse_data = mp.parseMolfile(mol_file)
@@ -86,9 +87,9 @@ def readMolfile(mol_file):
             dict_atoms[uid].targets.append(dict_ports[puid])
 
 
-readMolfile(mol_file)
-findMatched()
-addFreeInOut()
+read_mol_file(mol_file)
+find_matched()
+add_frin_frout()
 
 
 #print(dict_atoms['L_0'].__dict__)
