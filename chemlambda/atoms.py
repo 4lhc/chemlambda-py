@@ -23,28 +23,28 @@ class Atom:
         self.targets = targets
         self.sources = sources
         self.lno = lno
-        print("Atom {} of kind '{}' created..".format(self.uid, self.atom))
+        #print("Atom {} of kind '{}' created..".format(self.uid, self.atom))
 
-    def addTarget(self, target):
+    def add_target(self, target):
         self.targets.append(target)
 
-    def removeTarget(self, target):
+    def remove_target(self, target):
         self.targets.remove(target)
 
-    def addSource(self, source):
+    def add_source(self, source):
         self.sources.append(source)
 
-    def removeSource(self, source):
+    def remove_source(self, source):
         self.sources.remove(source)
 
-    def getColorAndSize(self):
-        """getColorAndSize()
+    def get_color_and_size(self):
+        """get_color_and_size()
             Return type: list 
             [ color, size ]
         """
         return settings.atom_color_size_dict[self.atom]
 
-    def setPortnames(self, a, b, c):
+    def set_port_names(self, a, b, c):
         """
         set a, b, c
         or
@@ -57,14 +57,14 @@ class Atom:
         self.b = b
         self.c = c
 
-    def getPortnames(self, dict_ports):
+    def get_port_names(self, dict_ports):
         """
-        getPortnames(dict_ports)
+        get_port_names(dict_ports)
         return port names of current atom
         """
         return [dict_ports[port].port_name for port in self.targets]
 
-    def getTopology(self):
+    def get_topology(self):
         """
         Return the order in which ports are written in mol files based on rules set
         in topology.py
@@ -84,13 +84,13 @@ class Port(Atom):
         self.lno = self.parent_atom.lno
         self.free = free
 
-    def setPortnames(self):
+    def set_port_names(self):
         print('port_name already set: {}'.format(self.port_name))
 
-    def getPortnames(self):
+    def get_port_names(self):
         return [self.port_name]
 
-    def setMatchedport(self, p2):
+    def set_matched_port(self, p2):
         """
         Check if matching ports, ie; in port & out port (mo ->li or ro->ri etc)
         Set targets p1 --> p2

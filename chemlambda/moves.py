@@ -33,7 +33,7 @@ class Moves:
         }
 
         
-    def identifyMove(self):
+    def identify_move(self):
         """
         """
         identifymove = { 
@@ -53,7 +53,7 @@ class Moves:
         self.atom1.atom
 
 
-def atomWeightage( a1, a2):
+def atom_weightage( a1, a2):
     """
     atomWeightage( a1 = Atom object, a2 = Atom object)
     returns atom according to weightage, ie; L < A <FI....< T
@@ -67,7 +67,7 @@ def atomWeightage( a1, a2):
 
 
 
-def betaMove( d, L, A, cl, ca, mid):
+def beta_move( d, L, A, cl, ca, mid):
     """ betaMove( mol_dict, L_mol_id, A_mol_id, c_port_of_L, c_port_A)
         return dict
         { mol_id: { 'target': [], 'type': str, 'name': str }
