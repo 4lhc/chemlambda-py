@@ -8,9 +8,12 @@
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 17:53:16 IST
 #  ver    : 
+#
+# A python port of chemlambda-gui by chorasimilarity (Marius Buliga, http://chorasimilarity.wordpress.com/)
+#
 
-# Rules to read mol files 
-#http://chorasimilarity.github.io/chemlambda-gui/dynamic/moves.html
+#'Topology' of the graphs (ie; rules to read mol files )
+# [http://chorasimilarity.github.io/chemlambda-gui/dynamic/moves.html]
 
 #dict containg rules to identify ports for each atom
 # mi = 'middle in', lo = 'left out' and so...
@@ -21,7 +24,8 @@ graph = { "L": [ "mi", "lo", "ro" ],
         "FI": [ "li", "ri", "mo" ],
         "Arrow": [ "mi", "mo" ],
         "T": [ "mi" ],
-        "FRIN": [ "mo" ],
-        "FROUT": [ "mi" ]
+        "FRIN": [ "fo" ],
+        "FROUT": [ "fi" ]
         }
+
 
