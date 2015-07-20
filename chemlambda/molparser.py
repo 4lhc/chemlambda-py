@@ -33,7 +33,7 @@ def parseMolfile(mol_file):
     else:
         mf = mol_file
         
-    all_names = [ i for j in mf for i in j ]
+    all_names = [ i for j in mf for i in j.split() ]
     for i, line in enumerate(mf):
         try:
             l = line.split()
@@ -41,7 +41,7 @@ def parseMolfile(mol_file):
             if max(counter) > 2:
                 print("error in mol file\n->line {}: {} \n".format(i+1, line))
             else:
-                mols.append({ "atom": l[0], "ports": l[1:]})
+                mols.append({ "atom": l[0], "ports": l[1:], "lno":i+1})
         except IndexError:
             #ignore empty lines
             pass

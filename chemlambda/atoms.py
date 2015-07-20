@@ -17,11 +17,12 @@ from chemlambda import topology
 class Atom:
     """
     """
-    def __init__(self, uid='', atom='', targets = [], sources = []):
+    def __init__(self, uid='', atom='', targets = [], lno='', sources = []):
         self.uid = uid
         self.atom = atom
         self.targets = targets
         self.sources = sources
+        self.lno = lno
         print("Atom {} of kind '{}' created..".format(self.uid, self.atom))
 
     def addTarget(self, target):
@@ -48,8 +49,9 @@ class Atom:
         set a, b, c
         or
         d, e, c
-        If c will be the port connected to another non-FR port for a particular
+        c will be the port connected to another non-FR port for a particular
         Left Pattern.
+        The ports are set before every LP move
         """
         self.a = a
         self.b = b
@@ -75,9 +77,11 @@ class Atom:
 class Port(Atom):
     """
     """
-    def __init__(self, uid='', atom='', port_name=''):
+    def __init__(self, uid='', atom='', port_name='',  parent_atom=''):
         Atom.__init__(self, uid=uid, atom=atom, targets = [], sources = [])
         self.port_name = port_name
+        self.parent_atom = parent_atom
+        self.lno = self.parent_atom.lno
 
     def setPortnames(self):
         print('port_name already set: {}'.format(self.port_name))
@@ -85,12 +89,18 @@ class Port(Atom):
     def getPortnames(self):
         return [self.port_name]
 
-    def getParentatom(self):
+    def setMatchedport(self, p2):
         """
-        Return uid parent atom of the port atom
-        port uid = L_0_2, parent uid = L_0
+        Check if matching ports, ie; in port & out port (mo ->li or ro->ri etc)
+        Set targets p1 --> p2
+        Return parent atoms of both port atom
         """
-        return '_'.join(self.uid.split('_')[:-1])
+        if self.atom[-1] == p2.atom[-1]:
+            print("port mismatch in mol file\n line {}"
+                    .format(self.parent_atom.lno))
+            return None
+        self.targets.append(p2)
+        return (self.parent_atom, p2.parent_atom) 
 
 
 
