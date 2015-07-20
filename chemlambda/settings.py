@@ -9,7 +9,13 @@
 #  date   : Sat 18 Jul 2015 17:25:35 IST
 #  ver    : 
 
-# Atom specific settings
+#
+# A python port of chemlambda-gui by chorasimilarity (Marius Buliga, http://chorasimilarity.wordpress.com/)
+#
+
+# Atom specific settings for visualisation
+
+
 
 #atom (node) colors
 green_col = "#8CC152"
@@ -26,23 +32,23 @@ mid_port_size = 2
 main_atom_size = 4
 
 
-atom_color_size_dict = { "mi": { "color": in_col, "size": mid_port_size},
-                         "li": { "color": in_col, "size": port_size},
-                         "ri": { "color": in_col, "size": port_size},
-                         "mo": { "color": out_col, "size": mid_port_size}, 
-                         "lo": { "color": out_col, "size": port_size},
-                         "ro": { "color": out_col, "size": port_size},
-                         "fo": { "color": out_col, "size": port_size},
-                         "fi": { "color": in_col, "size": port_size},
-                         "L": { "color": red_col, "size": main_atom_size},
-                         "A": { "color": green_col, "size": main_atom_size},
-                         "FI": { "color": red_col, "size": main_atom_size},
-                         "FO": { "color": green_col, "size": main_atom_size},
-                         "FOE": { "color": in_col, "size": main_atom_size},
-                         "Arrow": { "color": arrow_col, "size": main_atom_size},
-                         "T": { "color": term_col, "size": main_atom_size},
-                         "FROUT": { "color": out_col, "size": main_atom_size},
-                         "FRIN": { "color": in_col, "size": main_atom_size}
+atom_color_size_dict = { "mi": [  in_col,  mid_port_size],
+                         "li": [  in_col,  port_size],
+                         "ri": [  in_col,  port_size],
+                         "mo": [  out_col,  mid_port_size], 
+                         "lo": [  out_col,  port_size],
+                         "ro": [  out_col,  port_size],
+                         "fo": [  out_col,  port_size],
+                         "fi": [  in_col,  port_size],
+                         "L": [  red_col,  main_atom_size],
+                         "A": [  green_col,  main_atom_size],
+                         "FI": [  red_col,  main_atom_size],
+                         "FO": [  green_col,  main_atom_size],
+                         "FOE": [  in_col,  main_atom_size],
+                         "Arrow": [  arrow_col,  main_atom_size],
+                         "T": [  term_col,  main_atom_size],
+                         "FROUT": [  out_col,  main_atom_size],
+                         "FRIN": [  in_col,  main_atom_size]
                        }
 
 
