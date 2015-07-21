@@ -92,4 +92,3 @@ def beta_move( d, L, A, cl, ca, mid):
     links_to_remove = { }
 
 
-
