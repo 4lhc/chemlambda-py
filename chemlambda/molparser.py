@@ -51,3 +51,4 @@ def parse_mol_file(mol_file):
             pass
     return mols
 
+
