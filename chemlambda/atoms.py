@@ -89,20 +89,24 @@ class Port(Atom):
 
     def get_port_names(self):
         return [self.port_name]
-
-    def set_matched_port(self, p2):
+    
+    @staticmethod
+    def set_matched_port(p1, p2):
         """
         Check if matching ports, ie; in port & out port (mo ->li or ro->ri etc)
         Set targets p1 --> p2
         Return parent atoms of both port atom
         """
-        if self.atom[-1] == p2.atom[-1]:
+        if p1.atom[-1] == p2.atom[-1]:
             print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
                     .format(self.parent_atom.lno))
             return None
-        self.free = p2.free = 0 #ready for Freenodes
-        self.targets.append(p2)
-        return (self.parent_atom, p2.parent_atom) 
+        p1.free = p2.free = 0 #ready for Freenodes
+        if p1.atom[-1] == 'o':
+            p1.targets.append(p2) #targets only on port of kind out todo
+        else:
+            p2.targets.append(p1)
+        return (p1.parent_atom, p2.parent_atom) 
 
 
 
