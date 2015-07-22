@@ -1,5 +1,3 @@
-
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 #  molparser.py
@@ -8,8 +6,6 @@
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 18:09:22 IST
 #  ver    : 
-#
-# A python port of chemlambda-gui by chorasimilarity (Marius Buliga, http://chorasimilarity.wordpress.com/)
 #
 
 # Parse mol files based on rules from topology.py

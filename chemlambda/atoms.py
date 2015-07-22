@@ -1,5 +1,3 @@
-
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 #  atoms.py
@@ -9,7 +7,7 @@
 #  date   : Sun 19 Jul 2015 18:55:29 IST
 #  ver    : 
 
-# Create Atom objects
+# Atom class
 
 from chemlambda import settings
 from chemlambda import topology

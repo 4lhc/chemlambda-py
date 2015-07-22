@@ -1,5 +1,3 @@
-
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 #  settings.py
@@ -9,9 +7,6 @@
 #  date   : Sat 18 Jul 2015 17:25:35 IST
 #  ver    : 
 
-#
-# A python port of chemlambda-gui by chorasimilarity (Marius Buliga, http://chorasimilarity.wordpress.com/)
-#
 
 # Atom specific settings for visualisation
 
