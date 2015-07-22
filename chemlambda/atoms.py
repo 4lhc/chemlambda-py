@@ -15,8 +15,7 @@ from chemlambda import settings
 from chemlambda import topology
 
 class Atom:
-    """
-    """
+    """ """
     def __init__(self, uid='', atom='', targets = [], lno='', sources = []):
         self.uid = uid
         self.atom = atom
@@ -25,58 +24,36 @@ class Atom:
         self.lno = lno
         #print("Atom {} of kind '{}' created..".format(self.uid, self.atom))
 
-    def add_target(self, target):
+    def _add_target(self, target):
         self.targets.append(target)
 
-    def remove_target(self, target):
+    def _remove_target(self, target):
         self.targets.remove(target)
 
-    def add_source(self, source):
+    def _add_source(self, source):
         self.sources.append(source)
 
-    def remove_source(self, source):
+    def _remove_source(self, source):
         self.sources.remove(source)
 
-    def get_color_and_size(self):
-        """get_color_and_size()
+    def _get_color_and_size(self):
+        """_get_color_and_size()
             Return type: list 
             [ color, size ]
         """
         return settings.atom_color_size_dict[self.atom]
 
-    def set_port_names(self, a, b, c):
-        """
-        set a, b, c
-        or
-        d, e, c
-        c will be the port connected to another non-FR port for a particular
-        Left Pattern.
-        The ports are set before every LP move
-        """
-        self.a = a
-        self.b = b
-        self.c = c
 
-    def get_port_names(self, dict_ports):
-        """
-        get_port_names(dict_ports)
-        return port names of current atom
-        """
-        return [dict_ports[port].port_name for port in self.targets]
 
-    def get_topology(self):
-        """
-        Return the order in which ports are written in mol files based on rules set
-        in topology.py
-        """
-        return topology.graph[self.atom]
+    def _get_port_by_type(self, port_kind):
+        """ Return the port of the Atom from port atom kind """
+        return [ port for port in self.targets if port.atom == port_kind ]
 
 
 
 
 class Port(Atom):
-    """
-    """
+    """ """
     def __init__(self, uid='', atom='', port_name='',  parent_atom='', free = 1):
         Atom.__init__(self, uid=uid, atom=atom, targets = [], sources = [])
         self.port_name = port_name
@@ -84,14 +61,9 @@ class Port(Atom):
         self.lno = self.parent_atom.lno
         self.free = free
 
-    def set_port_names(self):
-        print('port_name already set: {}'.format(self.port_name))
 
-    def get_port_names(self):
-        return [self.port_name]
-    
     @staticmethod
-    def set_matched_port(p1, p2):
+    def _set_matched_port(p1, p2):
         """
         Check if matching ports, ie; in port & out port (mo ->li or ro->ri etc)
         Set targets p1 --> p2
@@ -107,6 +79,11 @@ class Port(Atom):
         else:
             p2.targets.append(p1)
         return (p1.parent_atom, p2.parent_atom) 
+
+    def _is_out_port(self):
+        """ returns boolean """
+        return self.atom[-1] is 'o'
+
 
 
 
