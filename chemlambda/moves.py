@@ -12,10 +12,17 @@
 #'Moves' to be performed
 # [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
 
+
+from chemlambda import topology
+from chemlambda import atoms
+from chemlambda import molparser as mp
+
 class Moves:
     """
+    find valid moves
+    create required atoms
     """
-    def __init__(self, atom1, atom2, a, b, c1, d, e, c2):
+    def __init__(self, atom1):
         """
             args: Atom objects
             atom1, atom2 are atoms in Left Pattern (LP)
@@ -24,33 +31,60 @@ class Moves:
             c1 and c2 are ports with the common port_name, ie; c1 and c2 links
             the two atoms
         """
-        self.identifyMove()
-        moves = { "BETA" : { 'ddd': 'ddd'
+        self.atom1 = atom1
+        self.validate_move = self._find_moves()
+        self.uid = ''
 
-                    }
+
+    def _bind_ports(self):
+        """
+        set a, b, c1
+        or
+        d, e, c2
+        c will be the port connected to another non-FR port for a particular
+        Left Pattern.
+        """
+        self.a, self.b = [ p for p in self.atom1.targets if p.atom != self.c1.atom ]
+        self.d, self.e = [ p for p in self.atom2.targets if p.atom != self.c2.atom ]
+
+    
+    def _create_atoms_and_ports(self):
+        """"""
+        print(self.right_pattern)
 
 
-        }
+            
+
+
+    def _atoms_to_add(self):
+        """Return Atom objects"""
+        self._create_atoms_and_ports()
+        
 
         
-    def identify_move(self):
-        """
-        """
-        identifymove = { 
-            "COMB": ["L-Arrow","A-Arrow","FI-Arrow","FO-Arrow","FOE-Arrow"],
-            "BETA": [ "L-A" ], 
-            "FAN-IN": ["FI-FOE"],
-            "DIST-L": [ "L-FO", "L-FOE" ],
-            "DIST-A": ["A-FO", "A-FOE"], 
-            "DIST-FI": ["FI-FO"],
-             "DIST-FO": ["FO-FOE"], 
-             "PRUNE1": [ "A-T", "FI-T"],
-             "PRUNE2": [ "L-T"],
-             "PRUNE3": ["FO-T", "FOE-T"]
-                   #getattr 
-            }
+    def _atoms_to_delete(self):
+        """Return list of Atom objects"""
+        d = {} #atoms_to_delete_dict
+        [ d.update({a.uid: a}) for a in [ self.atom1, self.atom2, self.c1, self.c2 ]]
+        return d
+
+
+    def _find_moves(self):
+        """ Sets some variables and returns boolean on match"""
+        move_dict = topology.moves[self.atom1.atom] #dict of moves for current atom
+        for port_type in move_dict.keys():
+            self.c1, = self.atom1._get_port_by_type(port_type)
+            self.c2, = self.c1.targets #c1 is always 'out' port and c2 'in' port
+            self.atom2 = self.c2.parent_atom
+            if self.atom2.atom in move_dict[port_type].keys():
+                self.right_pattern = mp._parse_mol_file(move_dict[port_type][self.atom2.atom])
+                self.move_name = self.atom1.atom + "-" + self.atom2.atom
+                return True
+        return False
+
+
         
-        self.atom1.atom
+    
 
 
 def atom_weightage( a1, a2):
@@ -58,7 +92,7 @@ def atom_weightage( a1, a2):
     atomWeightage( a1 = Atom object, a2 = Atom object)
     returns atom according to weightage, ie; L < A <FI....< T
     """
-    _weightage = [ "L", "A", "FI", "FO", "FOE", "Arrow", "T"]
+    weightage = [ "L", "A", "FI", "FO", "FOE", "Arrow", "T"]
     if _weightage.index(a1.atom) < _weightage.index(a2.atom):
         return [a1.atom, a2.atom]
     else:
