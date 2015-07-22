@@ -20,8 +20,7 @@ from chemlambda import topology
 from chemlambda import settings
 
 
-################################################################################
-# 
+## testing ##
 hl = '-'
 vl = '│'
 def print_dict_atoms(dict_atoms, title=''):
@@ -64,7 +63,6 @@ def print_dict_ports(dict_ports, title=''):
         parent, vl, port_name, vl, targets, vl))
 
     print(hl*head.__len__())
-################################################################################
 
 
 counter = data.Counter()
