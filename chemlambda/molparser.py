@@ -36,12 +36,12 @@ def _parse_mol_file(mol_file):
     else:
         mf = mol_file
         
-    all_names = [ i for j in mf for i in j.split() ]
+    all_names = [i for j in mf for i in j.split()]
     for i, line in enumerate(mf):
         try:
             l = line.split()
-            counter = [ all_names.count(i) for i in l[1:] ]
-            if max(counter) > 2:
+            counter = [all_names.count(i) for i in l[1:]]
+            if max(counter) > 2 or l[0] not in topology.graph:
                 print("\033[91mError:\033[0m in mol file\nline \033[92m{}\033[0m:{}"
                         .format(i+1, line))
             else:
@@ -54,8 +54,7 @@ def _parse_mol_file(mol_file):
             pass
     return mols
 
-
-def _read_mol_file(mol_file, atom_count = 0):  
+def _read_mol_file(mol_file, atom_count=0):  
     """
         read_mol_file( str or list of lines, count)
         Reads the mol file, parses it and populates dict_atoms and dict_ports
@@ -80,23 +79,19 @@ def _read_mol_file(mol_file, atom_count = 0):
             puid = uid + "_" + str(j)
             dict_ports[puid] = atoms.Port( uid=puid, atom=atom,
                     port_name=port_name, parent_atom=dict_atoms[uid])
-            dict_atoms[uid].targets.append(dict_ports[puid])
-
+            index = dict_atoms[uid]._insert_into(dict_ports[puid])
+            dict_atoms[uid].targets.insert(index, dict_ports[puid])
     return ( dict_atoms, dict_ports)
 
 
 def _find_matched(dict_ports):
     """
-    Run only once. To read moves from mol file.
-    When the cycle starts another Moves method find_moves() will perform this function
-    find LP from matched ports
     """
     L = list(dict_ports.values())
     [atoms.Port._set_matched_port(p1, p2) 
             for (i, p1) in enumerate(L) 
             for p2 in L[i+1:] 
             if p1.port_name == p2.port_name]
-
 
 
 def _add_frin_frout(dict_atoms, dict_ports):
@@ -107,7 +102,7 @@ def _add_frin_frout(dict_atoms, dict_ports):
     i = list(dict_atoms.keys()).__len__()
 
     for p in L:
-        at = ([ "FRIN", "fo" ], [ "FROUT", "fi"])[p._is_out_port()] #tuple[0] or tuple[1]
+        at = (["FRIN", "fo"], ["FROUT", "fi"])[p._is_out_port()] #tuple[0] or tuple[1]
         if p.free == 1:
             #free port exist
             uid = at[0] +"_" + str(i)

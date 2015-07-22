@@ -22,7 +22,7 @@ class Moves:
     find valid moves
     create required atoms
     """
-    def __init__(self, atom1):
+    def __init__(self, atom1, counter):
         """
             args: Atom objects
             atom1, atom2 are atoms in Left Pattern (LP)
@@ -32,8 +32,9 @@ class Moves:
             the two atoms
         """
         self.atom1 = atom1
-        self.validate_move = self._find_moves()
+        self.valid_move = self._find_moves()
         self.uid = ''
+        self.counter = counter
 
 
     def _bind_ports(self):
@@ -44,28 +45,76 @@ class Moves:
         c will be the port connected to another non-FR port for a particular
         Left Pattern.
         """
-        self.a, self.b = [ p for p in self.atom1.targets if p.atom != self.c1.atom ]
-        self.d, self.e = [ p for p in self.atom2.targets if p.atom != self.c2.atom ]
+        self.a, self.b = [p for p in self.atom1.targets if p.atom != self.c1.atom]
+        self.a.port_name = 'a'
+        self.b.port_name = 'b'
+        try:
+            #pruning/ comb moves don't have d and e
+            self.d, self.e = [p for p in self.atom2.targets if p.atom != self.c2.atom]
+            self.d.port_name = 'd'
+            self.e.port_name = 'e'
+        except ValueError:
+            pass
+
+
+
+    @staticmethod
+    def _update_old_port(p1, p2):
+        p1.atom = p2.atom
+        p2.parent_atom._remove_target(p2)
+        p2.parent_atom._add_target(p1)
+        p1.parent_atom = p2.parent_atom
 
     
     def _create_atoms_and_ports(self):
         """"""
-        print(self.right_pattern)
-
+        d_a, d_p = mp._read_mol_file(self.right_pattern, self.counter.atom_count)
+        self.counter.atom_count += list(d_a.keys()).__len__()
+        for k,p in d_p.items():
+            #update p.atom ro-->mo etc
+            #update self.b's parent & parent's target
+            if p.port_name == 'a':
+                Moves._update_old_port(self.a, p)
+                d_p[k] = self.a
+            elif p.port_name == 'b':
+                Moves._update_old_port(self.b, p)
+                d_p[k] = self.b
+            elif p.port_name == 'd':
+                Moves._update_old_port(self.d, p)
+                d_p[k] = self.d
+            elif p.port_name == 'e':
+                Moves._update_old_port(self.e, p)
+                d_p[k] = self.e
+            else:
+                pass
+        mp._find_matched(d_p)
+        Moves._delete_attr(d_p, 'port_name') #useless lno, port_name etc
+        Moves._delete_attr(d_a, 'lno')
+        return (d_a, d_p)
 
             
-
+    @staticmethod
+    def _delete_attr(d, attr):
+        """delete certain attributes from all atom/port objects"""
+        [d[k].__setattr__(attr, '') for k in d]
 
     def _atoms_to_add(self):
         """Return Atom objects"""
-        self._create_atoms_and_ports()
+        self._bind_ports()
+        return self._create_atoms_and_ports()
         
 
         
     def _atoms_to_delete(self):
-        """Return list of Atom objects"""
+        """Return dict of Atom objects"""
         d = {} #atoms_to_delete_dict
-        [ d.update({a.uid: a}) for a in [ self.atom1, self.atom2, self.c1, self.c2 ]]
+        [d.update({a.uid: a}) for a in [self.atom1, self.atom2]]
+        return d
+    
+    def _ports_to_delete(self):
+        """Return dict of Ports objects"""
+        d = {} 
+        [d.update({a.uid: a}) for a in [self.c1, self.c2]]
         return d
 
 
@@ -77,52 +126,8 @@ class Moves:
             self.c2, = self.c1.targets #c1 is always 'out' port and c2 'in' port
             self.atom2 = self.c2.parent_atom
             if self.atom2.atom in move_dict[port_type].keys():
-                self.right_pattern = mp._parse_mol_file(move_dict[port_type][self.atom2.atom])
+                self.right_pattern = move_dict[port_type][self.atom2.atom]
                 self.move_name = self.atom1.atom + "-" + self.atom2.atom
                 return True
         return False
-
-
-        
-    
-
-
-def atom_weightage( a1, a2):
-    """
-    atomWeightage( a1 = Atom object, a2 = Atom object)
-    returns atom according to weightage, ie; L < A <FI....< T
-    """
-    weightage = [ "L", "A", "FI", "FO", "FOE", "Arrow", "T"]
-    if _weightage.index(a1.atom) < _weightage.index(a2.atom):
-        return [a1.atom, a2.atom]
-    else:
-        return [a2.atom, a1.atom]
-
-
-
-
-def beta_move( d, L, A, cl, ca, mid):
-    """ betaMove( mol_dict, L_mol_id, A_mol_id, c_port_of_L, c_port_A)
-        return dict
-        { mol_id: { 'target': [], 'type': str, 'name': str }
-        ....}
-
-        L-A (Beta) move
-        ---------------
-        L a b c, A c d e -> Arrow a e, Arrow d b
-    """
-    port_names_of_L = d[L]['target'].copy()
-    port_names_of_L.remove(cl)
-    a, b = port_names_of_L
-
-    port_names_of_A = d[A]['target'].copy()
-    port_names_of_A.remove(ca)
-    d,e = port_names_of_A
-    
-    nodes_to_add = { str(mid): { 'target': [a, e], 'type': 'Arrow'},
-            str(mid+1): { 'target': [b, d], 'type': 'Arrow'} }
-    nodes_to_remove = { L : {}, A: {}, cl: {}, ca:{} }
-    
-    links_to_remove = { }
-
 
