@@ -1,2 +1,12 @@
 FO a b c
+L x x z
+L x y z
+FO a b c
 FOW c d e
+#FO 1 2 3 
+xFOW c d e
+L x y z
+
+T io lo
+A a e 
+FO a g h
