@@ -5,11 +5,12 @@
 #  author : Sreejith S
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sun 19 Jul 2015 13:26:52 IST
-#  ver    : 
+#  ver    :
 
 #'Moves' to be performed
 # [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
 
+# TODO: Needs move uid
 
 from chemlambda import topology
 from chemlambda import atoms
@@ -63,7 +64,7 @@ class Moves:
         p2.parent_atom._add_target(p1)
         p1.parent_atom = p2.parent_atom
 
-    
+
     def _create_atoms_and_ports(self):
         """"""
         d_a, d_p = mp._read_mol_file(self.right_pattern, self.counter.atom_count)
@@ -90,7 +91,7 @@ class Moves:
         Moves._delete_attr(d_a, 'lno')
         return (d_a, d_p)
 
-            
+
     @staticmethod
     def _delete_attr(d, attr):
         """delete certain attributes from all atom/port objects"""
@@ -100,18 +101,18 @@ class Moves:
         """Return Atom objects"""
         self._bind_ports()
         return self._create_atoms_and_ports()
-        
 
-        
+
+
     def _atoms_to_delete(self):
         """Return dict of Atom objects"""
         d = {} #atoms_to_delete_dict
         [d.update({a.uid: a}) for a in [self.atom1, self.atom2]]
         return d
-    
+
     def _ports_to_delete(self):
         """Return dict of Ports objects"""
-        d = {} 
+        d = {}
         [d.update({a.uid: a}) for a in [self.c1, self.c2]]
         return d
 
