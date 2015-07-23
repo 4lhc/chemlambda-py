@@ -5,12 +5,13 @@
 #  author : Sreejith S
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sun 19 Jul 2015 18:55:29 IST
-#  ver    : 
+#  ver    :
 
 # Atom class
 
 from chemlambda import settings
 from chemlambda import topology
+import copy
 
 class Atom:
     """ """
@@ -29,7 +30,7 @@ class Atom:
 
     def _get_color_and_size(self):
         """_get_color_and_size()
-            Return type: list 
+            Return type: list
             [ color, size ]
         """
         return settings.atom_color_size_dict[self.atom]
@@ -41,6 +42,36 @@ class Atom:
     def _insert_into(self, p):
         """Returns which index a p(ort) should go for the current atom1"""
         return topology.graph[self.atom].index(p.atom)
+
+
+    def _deflate(self):
+        """
+        Converts all Atom obj targets to uid strings
+        Returns a copy of Atom
+        """
+        atom_copy = copy.copy(self)
+        for key, value in atom_copy.__dict__.items():
+            if key == 'targets':
+                atom_copy.targets = [p.uid for p in value]
+            if key == 'parent_atom':
+                atom_copy.parent_atom = value.uid
+        return atom_copy
+
+    def _inflate(self, atom_dict):
+        """
+        Convert puid targets back to atom objects (use?)
+        """
+        atom_copy = copy.copy(self)
+        for key, value in atom_copy.__dict__.items():
+            if key == 'targets':
+                atom_copy.targets = [atom_dict[uid] for uid in value]
+            if key == 'parent_atom':
+                atom_copy.parent_atom = atom_dict[value]
+        return atom_copy
+
+
+    #def __del__(self):
+        #print('{} deleted'.format(self.uid))
 
 
 class Port(Atom):
@@ -55,7 +86,7 @@ class Port(Atom):
 
     def _add_target(self, target):
         self.targets = [target]
-    
+
     @staticmethod
     def _set_matched_port(p1, p2):
         """
