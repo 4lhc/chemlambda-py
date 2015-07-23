@@ -5,13 +5,13 @@
 #  author : Sreejith S
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 18:09:22 IST
-#  ver    : 
+#  ver    :
 #
 
 # Parse mol files based on rules from topology.py
 
 from chemlambda import topology
-from chemlambda import atoms 
+from chemlambda import atoms
 
 def _parse_mol_file(mol_file):
     """
@@ -23,15 +23,11 @@ def _parse_mol_file(mol_file):
     mols = []
 
     if mol_file.__class__ == str:
-        try:
-            with open(mol_file, 'r') as f:
-                mf = f.read().splitlines()    
-        except FileNotFoundError:
-            print("{} could not be read".format(mol_id))
-            return None
+        with open(mol_file, 'r') as f:
+            mf = f.read().splitlines()
     else:
         mf = mol_file
-        
+
     all_names = [i for j in mf for i in j.split()]
     for i, line in enumerate(mf):
         try:
@@ -50,7 +46,7 @@ def _parse_mol_file(mol_file):
             pass
     return mols
 
-def _read_mol_file(mol_file, atom_count=0):  
+def _read_mol_file(mol_file, atom_count=0):
     """
         read_mol_file( str or list of lines, count)
         Reads the mol file, parses it and populates dict_atoms and dict_ports
@@ -64,10 +60,10 @@ def _read_mol_file(mol_file, atom_count=0):
 
     for i, mol in enumerate(parse_data):
         uid = mol['atom'] + "_" + str(ac + i)
-        
+
         atom_list = topology.graph[mol['atom']]
         port_list = mol['ports']
-        
+
         dict_atoms[uid] = atoms.Atom(uid=uid, atom=mol['atom'], lno=mol['lno'])
         dict_atoms[uid].targets = [] ###???
 
@@ -84,9 +80,9 @@ def _find_matched(dict_ports):
     """
     """
     L = list(dict_ports.values())
-    [atoms.Port._set_matched_port(p1, p2) 
-            for (i, p1) in enumerate(L) 
-            for p2 in L[i+1:] 
+    [atoms.Port._set_matched_port(p1, p2)
+            for (i, p1) in enumerate(L)
+            for p2 in L[i+1:]
             if p1.port_name == p2.port_name]
 
 
@@ -107,7 +103,7 @@ def _add_frin_frout(dict_atoms, dict_ports):
             dict_ports[puid] = atoms.Port( uid=puid, atom=at[1],
                      parent_atom=dict_atoms[uid], free=0)
             dict_atoms[uid].targets.append(dict_ports[puid]) #adding targets
-            
+
             if p._is_out_port():
                 p._add_target(dict_ports[puid])
             else:
