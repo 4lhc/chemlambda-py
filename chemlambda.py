@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
@@ -7,9 +6,10 @@
 #  author : Sreejith S
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 12:34:38 IST
-#  ver    : 
+#  ver    :
 #
-# A python port of chemlambda-gui by chorasimilarity (Marius Buliga, http://chorasimilarity.wordpress.com/)
+# A python port of chemlambda-gui by chorasimilarity (Marius Buliga,
+# http://chorasimilarity.wordpress.com/)
 #
 
 
@@ -20,12 +20,14 @@ from chemlambda import topology
 from chemlambda import settings
 
 
-## testing ##
+# testing ##
 hl = '-'
 vl = '│'
+
+
 def print_dict_atoms(dict_atoms, title=''):
     print("\033[92;1m{:^70}\033[0m".format(title))
-    head = " {:<10} {} {:<10} {} {:<10} {} {:>30} {}".format('uid', vl, 'atom', vl, 
+    head = " {:<10} {} {:<10} {} {:<10} {} {:>30} {}".format('uid', vl, 'atom', vl,
             'lno', vl, 'targets', vl)
     print(hl*head.__len__())
     print(head)
@@ -37,7 +39,7 @@ def print_dict_atoms(dict_atoms, title=''):
         if not lno: lno = '---'
         atom = d['atom']
         targets = ', '.join([p.uid for p in d['targets']])
-        print( " {:<10} {} {:<10} {} {:^10} {} {:>30} {}".format(uid, vl, atom,
+        print(" {:<10} {} {:<10} {} {:^10} {} {:>30} {}".format(uid, vl, atom,
             vl, lno, vl, targets, vl))
 
     print(hl*head.__len__())
@@ -105,9 +107,9 @@ while counter.cycle_count < settings.MAX_CYCLES:
         print_dict_atoms(d_a, "Move: " + m.move_name)
         print_dict_ports(d_p)
         [dict_atoms.__delitem__(k) for k in m._atoms_to_delete()]
-        dict_atoms.update(d_a) 
+        dict_atoms.update(d_a)
         [dict_ports.__delitem__(k) for k in m._ports_to_delete()]
-        dict_ports.update(d_p) 
+        dict_ports.update(d_p)
 
     dicts.mega_atoms_dict.append(dict_atoms)
     dicts.mega_ports_dict.append(dict_ports)
