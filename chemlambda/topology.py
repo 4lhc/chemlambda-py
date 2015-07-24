@@ -5,7 +5,7 @@
 #  author : Sreejith S
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 17:53:16 IST
-#  ver    : 
+#  ver    :
 #
 
 #'Topology' (ie; rules to read mol files ) and allowed 'Moves' for each atom
@@ -13,7 +13,7 @@
 
 #dict containg rules to identify ports for each atom
 # mi = 'middle in', lo = 'left out' and so...
-graph = { "L": [ "mi", "lo", "ro" ], 
+graph = { "L": [ "mi", "lo", "ro" ],
         "FO": [ "mi", "lo", "ro" ],
         "FOE": [ "mi", "lo", "ro" ],
         "A": [ "li", "ri", "mo" ],
@@ -25,10 +25,29 @@ graph = { "L": [ "mi", "lo", "ro" ],
         }
 
 
-#Allowed moves for each atom
-moves = { "L": 
-        { 'ro': 
-            { 'A': 
+# Allowed moves for each atom
+# structure { "Atom1":
+#                    { 'port' :
+#                           { 'Atom2': [ RP ],
+#                             'Atom2x': [ RP],
+#                               -
+#                               -
+#                               -
+#                           }
+#                    }
+#           }
+
+# Atom1, Atom2x forms the right pattern
+# port is the port of Atom1 through which legal moves are possible
+# 'ro' is the only valid port for 'L' atoms
+# RP is written in the same notation as in:
+# [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
+
+# Hence reading the first move => L-A's RP = Arrow a e, Arrow d b
+
+moves = { "L":
+        { 'ro':
+            { 'A':
 
                 ["Arrow a e",
                     "Arrow d b"],
@@ -50,25 +69,25 @@ moves = { "L":
                 'T':
 
                 ["T a",
-                    "FRIN  b"], 
+                    "FRIN  b"],
 
                 }
             },
-        "A": 
+        "A":
         { 'mo':
             { 'FO':
 
-                ["FOE  a i j", 
-                    "A  i k d", 
-                    "A  j l e", 
+                ["FOE  a i j",
+                    "A  i k d",
+                    "A  j l e",
                     "FOE  b k l"],
 
 
                 'FOE':
 
-                ["FOE  a i j", 
-                    "A  i k d", 
-                    "A  j l e", 
+                ["FOE  a i j",
+                    "A  i k d",
+                    "A  j l e",
                     "FOE  b k l"],
 
                 'T':
@@ -89,9 +108,9 @@ moves = { "L":
 
                         'FO':
 
-                        ["FO  a i j", 
-                            "FI  i k d", 
-                            "FI  j l e", 
+                        ["FO  a i j",
+                            "FI  i k d",
+                            "FI  j l e",
                             "FO  b k l"],
 
                         'T':
