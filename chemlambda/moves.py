@@ -11,6 +11,7 @@
 # [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
 
 # TODO: Needs move uid
+# TODO: _move_update
 
 from chemlambda import topology
 from chemlambda import atoms
@@ -35,6 +36,11 @@ class Moves:
         self.uid = ''
         self.counter = counter
 
+    def _move_update(self):
+        """
+        fill move uid, move name, LP, RP etc
+        """
+
 
     def _bind_ports(self):
         """
@@ -48,14 +54,13 @@ class Moves:
         self.a.port_name = 'a'
         self.b.port_name = 'b'
         try:
-            #pruning/ comb moves don't have d and e
-            self.d, self.e = [p for p in self.atom2.targets if p.atom != self.c2.atom]
+            # pruning/ comb moves don't have d and e
+            self.d, self.e = [p for p in self.atom2.targets
+                              if p.atom != self.c2.atom]
             self.d.port_name = 'd'
             self.e.port_name = 'e'
         except ValueError:
             pass
-
-
 
     @staticmethod
     def _update_old_port(p1, p2):
@@ -67,8 +72,10 @@ class Moves:
 
 
     def _create_atoms_and_ports(self):
-        """"""
-        d_a, d_p = mp._read_mol_file(self.right_pattern, self.counter.atom_count)
+        """
+        """
+        d_a, d_p = mp._read_mol_file(self.right_pattern,
+                                     self.counter.atom_count)
         self.counter.atom_count += list(d_a.keys()).__len__()
         ports_to_del = []
         ports_to_add = []
@@ -114,7 +121,6 @@ class Moves:
         self._bind_ports()
         return self._create_atoms_and_ports()
 
-
     def _atoms_to_delete(self):
         """Return dict of Atom objects"""
         d = {}  # atoms_to_delete_dict
@@ -128,17 +134,22 @@ class Moves:
         [d.update({a.uid: a}) for a in ports_to_del]
         return d
 
-
     def _find_moves(self):
         """ Sets some variables and returns boolean on match"""
-        move_dict = topology.moves[self.atom1.atom] #dict of moves for current atom
+        move_dict = topology.moves[self.atom1.atom]
         for port_type in move_dict.keys():
             self.c1, = self.atom1._get_port_by_type(port_type)
-            self.c2, = self.c1.targets #c1 is always 'out' port and c2 'in' port
+            self.c2, = self.c1.targets  # c1 is always 'out' and c2 'in' port
             self.atom2 = self.c2.parent_atom
             if self.atom2.atom in move_dict[port_type].keys():
                 self.right_pattern = move_dict[port_type][self.atom2.atom]
                 self.move_name = self.atom1.atom + "-" + self.atom2.atom
                 return True
         return False
+
+    def _get_LP_to_RP(self):
+        """
+        Return colour formatted string of LP --> RP for the move
+        """
+        pass
 
