@@ -13,6 +13,7 @@
 from chemlambda import topology
 from chemlambda import atoms
 
+
 def _parse_mol_file(mol_file):
     """
     _parse_mol_file(mol_file | list_of_line)
@@ -46,6 +47,7 @@ def _parse_mol_file(mol_file):
             pass
     return mols
 
+
 def _read_mol_file(mol_file, atom_count=0):
     """
         read_mol_file( str or list of lines, count)
@@ -65,15 +67,16 @@ def _read_mol_file(mol_file, atom_count=0):
         port_list = mol['ports']
 
         dict_atoms[uid] = atoms.Atom(uid=uid, atom=mol['atom'], lno=mol['lno'])
-        dict_atoms[uid].targets = [] ###???
+        dict_atoms[uid].targets = []  # ???
 
         for j, (atom, port_name) in enumerate(zip(atom_list, port_list)):
             puid = uid + "_" + str(j)
-            dict_ports[puid] = atoms.Port( uid=puid, atom=atom,
-                    port_name=port_name, parent_atom=dict_atoms[uid])
+            dict_ports[puid] = atoms.Port(uid=puid, atom=atom,
+                                          port_name=port_name,
+                                          parent_atom=dict_atoms[uid])
             index = dict_atoms[uid]._insert_into(dict_ports[puid])
             dict_atoms[uid].targets.insert(index, dict_ports[puid])
-    return ( dict_atoms, dict_ports)
+    return (dict_atoms, dict_ports)
 
 
 def _find_matched(dict_ports):
@@ -81,9 +84,9 @@ def _find_matched(dict_ports):
     """
     L = list(dict_ports.values())
     [atoms.Port._set_matched_port(p1, p2)
-            for (i, p1) in enumerate(L)
-            for p2 in L[i+1:]
-            if p1.port_name == p2.port_name]
+     for (i, p1) in enumerate(L)
+     for p2 in L[i+1:]
+     if p1.port_name == p2.port_name]
 
 
 def _add_frin_frout(dict_atoms, dict_ports):
@@ -94,15 +97,16 @@ def _add_frin_frout(dict_atoms, dict_ports):
     i = list(dict_atoms.keys()).__len__()
 
     for p in L:
-        at = (["FRIN", "fo"], ["FROUT", "fi"])[p._is_out_port()] #tuple[0] or tuple[1]
+        at = (["FRIN", "fo"], ["FROUT", "fi"])[p._is_out_port()]  #tuple[]
         if p.free == 1:
-            #free port exist
-            uid = at[0] +"_" + str(i)
+            # free port exist
+            uid = at[0] + "_" + str(i)
             puid = uid + "_0"
-            dict_atoms[uid] = atoms.Atom( uid=uid, atom=at[0], targets = [])
-            dict_ports[puid] = atoms.Port( uid=puid, atom=at[1],
-                     parent_atom=dict_atoms[uid], free=0)
-            dict_atoms[uid].targets.append(dict_ports[puid]) #adding targets
+            dict_atoms[uid] = atoms.Atom(uid=uid, atom=at[0], targets=[])
+            dict_ports[puid] = atoms.Port(uid=puid, atom=at[1],
+                                          parent_atom=dict_atoms[uid],
+                                          free=0)
+            dict_atoms[uid].targets.append(dict_ports[puid])  # adding targets
 
             if p._is_out_port():
                 p._add_target(dict_ports[puid])
