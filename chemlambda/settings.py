@@ -5,12 +5,12 @@
 #  author : Sreejith S
 #  email  : echo $(base64 -d <<< NDQ0bGhjCg==)@gmail.com
 #  date   : Sat 18 Jul 2015 17:25:35 IST
-#  ver    : 
+#  ver    :
 
 
 # Atom specific settings for visualisation
 
-MAX_CYCLES = 50
+# TODO: Class
 
 #atom (node) colors
 green_col = "#8CC152"
@@ -30,7 +30,7 @@ main_atom_size = 4
 atom_color_size_dict = { "mi": [in_col,  mid_port_size],
                          "li": [in_col,  port_size],
                          "ri": [in_col,  port_size],
-                         "mo": [out_col,  mid_port_size], 
+                         "mo": [out_col,  mid_port_size],
                          "lo": [out_col,  port_size],
                          "ro": [out_col,  port_size],
                          "fo": [out_col,  port_size],
