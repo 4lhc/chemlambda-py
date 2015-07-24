@@ -9,9 +9,6 @@
 
 # validate mol files
 
-# TODO identify >2 portnames
-# TODO Duplicate lines
-# TODO ignore invalid atoms and comments
 
 import textcolor
 import topology
