@@ -40,7 +40,7 @@ def _read_mol_file(mol_file):
         with open(mol_file, 'r') as f:
             mf = [i.strip() for i in f.read().splitlines()]
         return mf
-    except filenotfounderror:
+    except FileNotFoundError:
         tc.error("file not found, {}".format(mol_file))
         sys.exit()
 
