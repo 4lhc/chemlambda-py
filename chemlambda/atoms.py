@@ -13,9 +13,10 @@ from chemlambda import settings
 from chemlambda import topology
 import copy
 
+
 class Atom:
     """ """
-    def __init__(self, uid='', atom='', targets=[], lno='' ):
+    def __init__(self, uid='', atom='', targets=[], lno=''):
         self.uid = uid
         self.atom = atom
         self.targets = targets
@@ -43,7 +44,6 @@ class Atom:
         """Returns which index a p(ort) should go for the current atom1"""
         return topology.graph[self.atom].index(p.atom)
 
-
     def _deflate(self):
         """
         Converts all Atom obj targets to uid strings
@@ -70,10 +70,6 @@ class Atom:
         return atom_copy
 
 
-    #def __del__(self):
-        #print('{} deleted'.format(self.uid))
-
-
 class Port(Atom):
     """ """
     def __init__(self, uid='', atom='', port_name='',  parent_atom='', free=1):
@@ -82,7 +78,6 @@ class Port(Atom):
         self.parent_atom = parent_atom
         self.lno = self.parent_atom.lno
         self.free = free
-
 
     def _add_target(self, target):
         self.targets = [target]
@@ -95,11 +90,11 @@ class Port(Atom):
         """
         if p1.atom[-1] == p2.atom[-1]:
             print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
-                    .format(p1.parent_atom.lno))
+                  .format(p1.parent_atom.lno))
             return None
-        p1.free = p2.free = 0 #ready for Freenodes
+        p1.free = p2.free = 0  # ready for Freenodes
         if p1.atom[-1] == 'o':
-            p1.targets = [p2] #targets only on port of kind out todo
+            p1.targets = [p2]  # targets only on port of kind out todo
         else:
             p2.targets = [p1]
 
