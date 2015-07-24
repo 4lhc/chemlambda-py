@@ -115,6 +115,7 @@ def generate_cycle(max_cycles=50):
     exhausted
     """
     while counter.cycle_count < max_cycles:
+        print("{:^70}".format(counter.cycle_count))
         counter.cycle_count += 1
         M = [moves.Moves(a, counter) for a in dict_atoms.values()
              if a.atom in topology.moves]
@@ -137,7 +138,7 @@ def generate_cycle(max_cycles=50):
 
 
 def main():
-    intialise('mol_files/9_quine.mol')
+    intialise('mol_files/small.mol')
     generate_cycle(50)
     return 0
 
