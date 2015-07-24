@@ -37,7 +37,7 @@ graph = { "L": [ "mi", "lo", "ro" ],
 #                    }
 #           }
 
-# Atom1, Atom2x forms the right pattern
+# Atom1, Atom2x forms the left pattern
 # port is the port of Atom1 through which legal moves are possible
 # 'ro' is the only valid port for 'L' atoms
 # RP is written in the same notation as in:
