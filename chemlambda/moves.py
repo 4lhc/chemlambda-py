@@ -63,34 +63,46 @@ class Moves:
         p2.parent_atom._remove_target(p2)
         p2.parent_atom._add_target(p1)
         p1.parent_atom = p2.parent_atom
+        p1.port_name = p2.port_name
 
 
     def _create_atoms_and_ports(self):
         """"""
         d_a, d_p = mp._read_mol_file(self.right_pattern, self.counter.atom_count)
         self.counter.atom_count += list(d_a.keys()).__len__()
-        for k,p in d_p.items():
-            #update p.atom ro-->mo etc
-            #update self.b's parent & parent's target
+        ports_to_del = []
+        ports_to_add = []
+
+        for k, p in d_p.items():
+            # update p.atom ro-->mo etc
+            # update self.b's parent & parent's target
             if p.port_name == 'a':
                 Moves._update_old_port(self.a, p)
-                d_p[k] = self.a
+                ports_to_del.append(p.uid)
+                ports_to_add.append(self.a)
             elif p.port_name == 'b':
                 Moves._update_old_port(self.b, p)
-                d_p[k] = self.b
+                ports_to_del.append(p.uid)
+                ports_to_add.append(self.b)
             elif p.port_name == 'd':
                 Moves._update_old_port(self.d, p)
-                d_p[k] = self.d
+                ports_to_del.append(p.uid)
+                ports_to_add.append(self.d)
             elif p.port_name == 'e':
                 Moves._update_old_port(self.e, p)
-                d_p[k] = self.e
+                ports_to_del.append(p.uid)
+                ports_to_add.append(self.e)
             else:
                 pass
+        # deleting newly created atoms (a,b,d,e equivalents)
+        [d_p.__delitem__(k) for k in ports_to_del]
+        # adding a,b,c,d to d_p
+        [d_p.update({p.uid: p}) for p in ports_to_add]
+
         mp._find_matched(d_p)
-        Moves._delete_attr(d_p, 'port_name') #useless lno, port_name etc
+        Moves._delete_attr(d_p, 'port_name')  # clear generic port_names
         Moves._delete_attr(d_a, 'lno')
         return (d_a, d_p)
-
 
     @staticmethod
     def _delete_attr(d, attr):
@@ -103,17 +115,17 @@ class Moves:
         return self._create_atoms_and_ports()
 
 
-
     def _atoms_to_delete(self):
         """Return dict of Atom objects"""
-        d = {} #atoms_to_delete_dict
+        d = {}  # atoms_to_delete_dict
         [d.update({a.uid: a}) for a in [self.atom1, self.atom2]]
         return d
 
     def _ports_to_delete(self):
         """Return dict of Ports objects"""
+        ports_to_del = [self.c1, self.c2]
         d = {}
-        [d.update({a.uid: a}) for a in [self.c1, self.c2]]
+        [d.update({a.uid: a}) for a in ports_to_del]
         return d
 
 
