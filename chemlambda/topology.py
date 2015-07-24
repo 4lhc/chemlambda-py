@@ -39,11 +39,13 @@ graph = { "L": [ "mi", "lo", "ro" ],
 
 # Atom1, Atom2x forms the left pattern
 # port is the port of Atom1 through which legal moves are possible
-# 'ro' is the only valid port for 'L' atoms
+# 'ro' is the only valid port type for 'L' atoms
 # RP is written in the same notation as in:
 # [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
 
 # Hence reading the first move => L-A's RP = Arrow a e, Arrow d b
+
+# TODO: Write COMB moves rule
 
 moves = { "L":
         { 'ro':
