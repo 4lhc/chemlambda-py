@@ -72,15 +72,20 @@ class Atom:
 
 class Port(Atom):
     """ """
-    def __init__(self, uid='', atom='', port_name='',  parent_atom='', free=1):
+    def __init__(self, uid='', atom='', port_name='',  parent_atom='', free=1,
+                 sources=[]):
         Atom.__init__(self, uid=uid, atom=atom, targets=[])
         self.port_name = port_name
         self.parent_atom = parent_atom
         self.lno = self.parent_atom.lno
         self.free = free
+        self.sources = sources
 
     def _add_target(self, target):
         self.targets = [target]
+
+    def _add_source(self, source):
+        self.sources = [source]
 
     @staticmethod
     def _set_matched_port(p1, p2):
@@ -89,14 +94,17 @@ class Port(Atom):
         Set targets p1 --> p2
         """
         if p1.atom[-1] == p2.atom[-1]:
+            # TODO: let textformat do this
             print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
                   .format(p1.parent_atom.lno))
             return None
         p1.free = p2.free = 0  # ready for Freenodes
         if p1.atom[-1] == 'o':
-            p1.targets = [p2]  # targets only on port of kind out todo
+            p1.targets = [p2]
+            p2.sources = [p1]
         else:
             p2.targets = [p1]
+            p1.sources = [p2]
 
     def _is_out_port(self):
         """ returns boolean """
