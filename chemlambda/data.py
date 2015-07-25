@@ -3,25 +3,25 @@ class Counter:
     Various (unnecessary) Counters
     """
     def __init__(self):
-        self.cycle_count = 0  # intial visualisation = cycle 0
-        self.total_move_count = 0
-        self.atom_count = 0
-        self.port_count = 0
-        self.move_count = 0
+        self._reset()
 
     def update(self, ds):
         # per atom counter
         # per port counter
         self.total_move_count = ds.dict_moves.__len_()
 
+    def _reset(self):
+        self.cycle_count = 0  # intial visualisation = cycle 0
+        self.total_move_count = 0
+        self.atom_count = 0
+        self.port_count = 0
+        self.move_count = 0
+
 
 class ChemlambdaDicts:
     """"""
     def __init__(self):
-        self.mega_atoms_list = {}  # snapshot of atoms and ports for cycles
-        self.moves_list = {}
-        self.dict_atoms = {}
-        self.dict_ports = {}
+        self._reset()
 
     def _take_snapshot(self, curr_cycle):
         """
@@ -46,3 +46,10 @@ class ChemlambdaDicts:
         for k, atom in d.items():
             d_new[k] = atom._inflate(d)
         return d_new
+
+    def _reset(self):
+        """Empties every variables"""
+        self.mega_atoms_list = {}  # snapshot of atoms and ports for cycles
+        self.moves_list = {}
+        self.dict_atoms = {}
+        self.dict_ports = {}
