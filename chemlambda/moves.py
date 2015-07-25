@@ -7,7 +7,7 @@
 #  date   : Sun 19 Jul 2015 13:26:52 IST
 #  ver    :
 
-#'Moves' to be performed
+# 'Moves' to be performed
 # [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
 
 # TODO: Needs move uid
@@ -59,7 +59,8 @@ class Moves:
         c will be the port connected to another non-FR port for a particular
         Left Pattern.
         """
-        self.a, self.b = [p for p in self.atom1.targets if p.atom != self.c1.atom]
+        self.a, self.b = [p for p in self.atom1.targets
+                          if p.atom != self.c1.atom]
         self.a.port_name = 'a'
         self.b.port_name = 'b'
         try:
@@ -78,7 +79,6 @@ class Moves:
         p2.parent_atom._add_target(p1)
         p1.parent_atom = p2.parent_atom
         p1.port_name = p2.port_name
-
 
     def _create_atoms_and_ports(self):
         """
@@ -129,12 +129,6 @@ class Moves:
         """Return Atom objects"""
         self._bind_ports()
         return self._create_atoms_and_ports()
-
-    #def _atoms_to_delete(self):
-        #"""Return dict of Atom objects"""
-        #d = {}  # atoms_to_delete_dict
-        #[d.update({a.uid: a}) for a in [self.atom1, self.atom2]]
-        #return d
 
     def _atoms_to_delete(self):
         """Return dict of Atoms and Ports objects"""
