@@ -13,15 +13,16 @@
 
 #dict containg rules to identify ports for each atom
 # mi = 'middle in', lo = 'left out' and so...
-graph = { "L": [ "mi", "lo", "ro" ],
-        "FO": [ "mi", "lo", "ro" ],
-        "FOE": [ "mi", "lo", "ro" ],
-        "A": [ "li", "ri", "mo" ],
-        "FI": [ "li", "ri", "mo" ],
-        "Arrow": [ "mi", "mo" ],
-        "T": [ "mi" ],
-        "FRIN": [ "fo" ],
-        "FROUT": [ "fi" ]
+graph = {
+        "L": ["mi", "lo", "ro"],
+        "FO": ["mi", "lo", "ro"],
+        "FOE": ["mi", "lo", "ro"],
+        "A": ["li", "ri", "mo"],
+        "FI": ["li", "ri", "mo"],
+        "Arrow": ["mi", "mo"],
+        "T": ["mi"],
+        "FRIN": ["fo"],
+        "FROUT": ["fi"]
         }
 
 
@@ -47,118 +48,64 @@ graph = { "L": [ "mi", "lo", "ro" ],
 
 # TODO: Write COMB moves rule
 
-moves = { "L":
-        { 'ro':
-            { 'A':
-
-                ["Arrow a e",
-                    "Arrow d b"],
-
-                'FO':
-
-                ["FI  j i b",
-                    "L  k i d",
-                    "L  l j e",
-                    "FOE  a k l"],
-
-                'FOE':
-
-                ["FI  j i b",
-                    "L  k i d",
-                    "L  l j e",
-                    "FOE  a k l"],
-
-                'T':
-
-                ["T a",
-                    "FRIN  b"],
+moves = {
+        "L":
+        {
+            'ro':
+            {
+                'A': ["Arrow a e", "Arrow d b"],
+                'FO': ["FI  j i b", "L  k i d", "L  l j e", "FOE  a k l"],
+                'FOE': ["FI  j i b", "L  k i d", "L  l j e", "FOE  a k l"],
+                'T': ["T a", "FRIN  b"],
 
                 }
             },
         "A":
-        { 'mo':
-            { 'FO':
-
-                ["FOE  a i j",
-                    "A  i k d",
-                    "A  j l e",
-                    "FOE  b k l"],
-
-
-                'FOE':
-
-                ["FOE  a i j",
-                    "A  i k d",
-                    "A  j l e",
-                    "FOE  b k l"],
-
-                'T':
-
-                ["T  a",
-                    "T b"],
-
+        {
+            'mo':
+            {
+                'FO': ["FOE  a i j", "A  i k d", "A  j l e", "FOE  b k l"],
+                'FOE': ["FOE  a i j", "A  i k d", "A  j l e", "FOE  b k l"],
+                'T': ["T  a", "T b"],
 
                 }
             },
         "FI":
-            { 'mo':
-                    { 'FOE':
+        {
+            'mo':
+            {
+                'FOE': ["Arrow  a e", "Arrow  b d"],
+                'FO': ["FO  a i j", "FI  i k d", "FI  j l e", "FO  b k l"],
+                'T': ["T  a", "T b"],
 
-                        ["Arrow  a e",
-                            "Arrow  b d"],
+                }
+            },
+        "FO":
+        {
+            'ro':
+            {
+                'FOE': ["FI  j i b", "FO  k i d", "FO  l j e", "FOE  a k l"],
+                'T': ["Arrow a b"]
 
+                },
+            'lo':
+            {
+                'T': ["Arrow  a b"]
 
-                        'FO':
+                }
+            },
+        "FOE":
+        {
+            'ro':
+            {
+                'T': ["Arrow  a b"]
 
-                        ["FO  a i j",
-                            "FI  i k d",
-                            "FI  j l e",
-                            "FO  b k l"],
+                },
+            'lo':
+            {
+                'T': ["Arrow  a b"]
 
-                        'T':
+                }
 
-                        ["T  a",
-                            "T b"],
-
-
-
-                        }
-                    },
-            "FO":
-                {  'ro':
-                        { 'FOE':
-
-                            ["FI  j i b",
-                                "FO  k i d",
-                                "FO  l j e",
-                                "FOE  a k l"],
-
-                            'T':
-
-                            ["Arrow a b"]
-
-
-                            },
-                        'lo':
-                        { 'T':
-
-                            ["Arrow  a b"]
-
-                            }
-                        },
-                "FOE":
-                    { 'ro':
-                            { 'T':
-
-                                ["Arrow  a b"]
-
-                                },
-                            'lo':
-                            { 'T':
-
-                                ["Arrow  a b"]
-
-                                }
-
-                            }
-                    }
+            }
+        }
