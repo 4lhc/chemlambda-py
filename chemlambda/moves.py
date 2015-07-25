@@ -193,6 +193,8 @@ class Moves:
         Deflate Moves object for snapshot.
         Returns deflated move object
         """
+        [self.__setattr__(k, v.uid) for k, v in self.__dict__.items()
+         if hasattr(v, 'uid')]  # hope nothing else turn up with attr 'uid'
         return self
 
 
