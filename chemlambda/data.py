@@ -1,4 +1,3 @@
-# TODO: combined dict?? call _deflate _inflate -> snapshot list
 class Counter:
     """
     Various (unnecessary) Counters
@@ -8,6 +7,7 @@ class Counter:
         self.total_move_count = 0
         self.atom_count = 0
         self.port_count = 0
+        self.move_count = 0
 
     def update(self, ds):
         # per atom counter
