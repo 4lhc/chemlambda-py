@@ -19,7 +19,7 @@ class ChemlambdaDicts:
     """"""
     def __init__(self):
         self.mega_atoms_list = {}  # snapshot of atoms and ports for cycles
-        self.moves_list = []
+        self.moves_list = {}
         self.dict_atoms = {}
         self.dict_ports = {}
 
