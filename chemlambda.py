@@ -119,18 +119,22 @@ def generate_cycle(max_cycles=50):
         counter.cycle_count += 1
         M = [moves.Moves(a, counter) for a in dict_atoms.values()
              if a.atom in topology.moves]
-        M = [m for m in M if m.valid_move]
+        M = [m._move_update() for m in M if m.valid_move]
         if len(M) == 0:
             break
-        for m in M:
-            d_a, d_p = m._atoms_to_add()  # creates new atoms on this call
-            [dict_atoms.__delitem__(k) for k in m._atoms_to_delete()]
-            dict_atoms.update(d_a)
-            [dict_ports.__delitem__(k) for k in m._ports_to_delete()]
-            dict_ports.update(d_p)
+        M = [m._del_atoms_ports_from_dict(dict_atoms, dict_ports) for m in M]
+        M = [m._add_atoms_ports_to_dict(dict_atoms, dict_ports) for m in M]
 
-        print(counter.cycle_count)
+        #for m in M:
+            #d_a, d_p = m._atoms_to_add()  # creates new atoms on this call
+            #[dict_atoms.__delitem__(k) for k in m._atoms_to_delete()]
+            #dict_atoms.update(d_a)
+            #[dict_ports.__delitem__(k) for k in m._ports_to_delete()]
+            #dict_ports.update(d_p)
+
+        M = [m._move_snapshot() for m in M]
         dicts._take_snapshot(counter.cycle_count)
+        dicts.moves_list.append(M)
 
         print_dict_atoms(dict_atoms, "Atoms")
         print_dict_ports(dict_ports, "Ports")
@@ -140,6 +144,7 @@ def generate_cycle(max_cycles=50):
 def main():
     intialise('mol_files/small.mol')
     generate_cycle(50)
+    print(dicts.moves_list[0][0].LP_RP)
     return 0
 
 if __name__ == '__main__':
