@@ -14,8 +14,12 @@
 # TODO: _move_update
 
 from chemlambda import topology
-from chemlambda import atoms
+from chemlambda import settings
 from chemlambda import molparser as mp
+from chemlambda import textcolor
+
+tc = textcolor.TextColor()
+
 
 class Moves:
     """
@@ -34,13 +38,18 @@ class Moves:
         self.atom1 = atom1
         self.valid_move = self._find_moves()
         self.uid = ''
-        self.counter = counter
+        self.counter = counter  # counter object
 
     def _move_update(self):
         """
-        fill move uid, move name, LP, RP etc
+        fill move uid, move name, LP_RP etc
         """
-
+        cc = self.counter.cycle_count
+        mc = self.counter.move_count
+        self.uid = str(cc) + '_' + str(mc)
+        self.LP_RP = self._get_LP_to_RP()
+        self.counter.move_count += 1
+        return self
 
     def _bind_ports(self):
         """
@@ -121,18 +130,33 @@ class Moves:
         self._bind_ports()
         return self._create_atoms_and_ports()
 
-    def _atoms_to_delete(self):
-        """Return dict of Atom objects"""
-        d = {}  # atoms_to_delete_dict
-        [d.update({a.uid: a}) for a in [self.atom1, self.atom2]]
-        return d
+    #def _atoms_to_delete(self):
+        #"""Return dict of Atom objects"""
+        #d = {}  # atoms_to_delete_dict
+        #[d.update({a.uid: a}) for a in [self.atom1, self.atom2]]
+        #return d
 
-    def _ports_to_delete(self):
-        """Return dict of Ports objects"""
+    def _atoms_to_delete(self):
+        """Return dict of Atoms and Ports objects"""
         ports_to_del = [self.c1, self.c2]
-        d = {}
-        [d.update({a.uid: a}) for a in ports_to_del]
-        return d
+        atoms_to_del = [self.atom1, self.atom2]
+        d_p = [(a.uid, a) for a in ports_to_del]
+        d_a = [(a.uid, a) for a in atoms_to_del]
+        return (dict(d_a), dict(d_p))
+
+    def _del_atoms_ports_from_dict(self, dict_atoms, dict_ports):
+        """Delete all unwanted atoms from dict_atoms and dict_ports"""
+        d_a, d_p = self._atoms_to_delete()
+        [dict_atoms.__delitem__(k) for k in d_a]
+        [dict_ports.__delitem__(k) for k in d_p]
+        return self
+
+    def _add_atoms_ports_to_dict(self, dict_atoms, dict_ports):
+        """Adds atoms and ports to dict_atoms and dict_ports"""
+        d_a, d_p = self._atoms_to_add()
+        dict_atoms.update(d_a)
+        dict_ports.update(d_p)
+        return self
 
     def _find_moves(self):
         """ Sets some variables and returns boolean on match"""
@@ -151,5 +175,30 @@ class Moves:
         """
         Return colour formatted string of LP --> RP for the move
         """
-        pass
+        def _atom_format(atom):
+            """"""
+            text = tc.ftext('[', fcol='mg')
+            text += tc.ftext(atom.uid, **t_cols[atom.atom])
+            text += '  '
+            text += ','.join([tc.ftext(port.uid, **t_cols[port.atom])
+                              for port in atom.targets])
+            text += tc.ftext(']', fcol='mg')
+            return text
+
+        t_cols = settings.atom_term_color
+        d_a = self._atoms_to_delete()[0]
+        a_a = self._atoms_to_add()[0]
+
+        lp_rp = ', '.join([_atom_format(a) for a in d_a.values()])
+        lp_rp += tc.ftext(' --> ', fcol='wt')
+        lp_rp += ', '.join([_atom_format(a) for a in a_a.values()])
+        return lp_rp
+
+    def _move_snapshot(self):
+        """
+        Deflate Moves object for snapshot.
+        Returns deflated move object
+        """
+        return self
+
 
