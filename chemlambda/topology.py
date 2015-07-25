@@ -8,10 +8,10 @@
 #  ver    :
 #
 
-#'Topology' (ie; rules to read mol files ) and allowed 'Moves' for each atom
+# 'Topology' (ie; rules to read mol files ) and allowed 'Moves' for each atom
 # [http://chorasimilarity.github.io/chemlambda-gui/dynamic/moves.html]
 
-#dict containg rules to identify ports for each atom
+# dict containg rules to identify ports for each atom
 # mi = 'middle in', lo = 'left out' and so...
 graph = {
         "L": ["mi", "lo", "ro"],
