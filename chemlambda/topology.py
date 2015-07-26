@@ -46,8 +46,6 @@ graph = {
 
 # Hence reading the first move => L-A's RP = Arrow a e, Arrow d b
 
-# TODO: Write COMB moves rule
-
 moves = {
         "L":
         {
