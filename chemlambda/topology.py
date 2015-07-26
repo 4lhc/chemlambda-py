@@ -57,7 +57,12 @@ moves = {
                 'FO': ["FI  j i b", "L  k i d", "L  l j e", "FOE  a k l"],
                 'FOE': ["FI  j i b", "L  k i d", "L  l j e", "FOE  a k l"],
                 'T': ["T a", "FRIN  b"],
+                'Arrow': ["L a b d"]
 
+                },
+            'lo':
+            {
+                'Arrow': ["L a d b"]
                 }
             },
         "A":
@@ -67,6 +72,7 @@ moves = {
                 'FO': ["FOE  a i j", "A  i k d", "A  j l e", "FOE  b k l"],
                 'FOE': ["FOE  a i j", "A  i k d", "A  j l e", "FOE  b k l"],
                 'T': ["T  a", "T b"],
+                'Arrow': ["A a b d"]
 
                 }
             },
@@ -77,6 +83,7 @@ moves = {
                 'FOE': ["Arrow  a e", "Arrow  b d"],
                 'FO': ["FO  a i j", "FI  i k d", "FI  j l e", "FO  b k l"],
                 'T': ["T  a", "T b"],
+                'Arrow': ["FI a b d"]
 
                 }
             },
@@ -85,12 +92,14 @@ moves = {
             'ro':
             {
                 'FOE': ["FI  j i b", "FO  k i d", "FO  l j e", "FOE  a k l"],
-                'T': ["Arrow a b"]
+                'T': ["Arrow a b"],
+                'Arrow': ["FO a b d"]
 
                 },
             'lo':
             {
-                'T': ["Arrow  a b"]
+                'T': ["Arrow  a b"],
+                'Arrow': ["FO a d b"]
 
                 }
             },
@@ -98,12 +107,14 @@ moves = {
         {
             'ro':
             {
-                'T': ["Arrow  a b"]
+                'T': ["Arrow  a b"],
+                'Arrow': ["FOE a b d"]
 
                 },
             'lo':
             {
-                'T': ["Arrow  a b"]
+                'T': ["Arrow  a b"],
+                'Arrow': ["FOE a d b"]
 
                 }
 
