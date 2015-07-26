@@ -23,7 +23,7 @@ class Moves:
     find valid moves
     create required atoms
     """
-    def __init__(self, atom1, counter):
+    def __init__(self, atom1, counter, atoms_taken):
         """
             args: Atom objects
             atom1, atom2 are atoms in Left Pattern (LP)
@@ -34,7 +34,10 @@ class Moves:
         """
         self.atom1 = atom1
         self.counter = counter  # counter object
-        self.valid_move = self._find_moves()
+        self.atoms_taken = atoms_taken
+        self.is_comb = False  # this is for Pruning and COMBs
+        self.is_prune = False
+        self.valid_move = self._find_moves()  # keep this the last line in init
 
     def _bind_ports(self):
         """
@@ -48,28 +51,44 @@ class Moves:
         self.b.port_name = 'b'
         self.c1.port_name = 'c'
         self.c2.port_name = 'c'
+
         try:
-            # pruning/ comb moves don't have d and e
+            # pruning/ comb moves don't have d and/or e
             self.d, self.e = [p for p in self.atom2.targets
                               if p.atom != self.c2.atom]
             self.d.port_name = 'd'
             self.e.port_name = 'e'
         except ValueError:
+            if self.atom2.atom == 'T':
+                self.is_prune = True
+            if self.atom2.atom == 'Arrow':
+                self.d, = [p for p in self.atom2.targets
+                           if p.atom != self.c2.atom]
+                self.d.port_name = 'd'
+                self.is_comb = True
             pass
 
     def _find_moves(self):
         """ Sets some variables and returns boolean on match"""
         move_dict = topology.moves[self.atom1.atom]
         for port_type in move_dict.keys():
+            # finds the
             self.c1, = self.atom1._get_port_by_type(port_type)
             # this is important! c1 is always 'out' and c2 'in' port
             self.c2, = self.c1.targets
             self.atom2 = self.c2.parent_atom
-            if self.atom2.atom in move_dict[port_type].keys():
+            if (self.atom2.atom in move_dict[port_type].keys() and
+                    self.atom1 not in self.atoms_taken and
+                    self.atom2 not in self.atoms_taken):
+                print(tc.ftext("[y] MOVE of " + self.atom1.uid + " >" +
+                               self.atom2.uid, fcol='gr'))
                 self.right_pattern = move_dict[port_type][self.atom2.atom]
                 self._bind_ports()
                 self._move_update()
+                self.atoms_taken += [self.atom1, self.atom2]  # atom1 needn't be added
                 return True
+        print(tc.ftext("[n] MOVE of " + self.atom1.uid + " >" +
+                       self.atom2.uid, fcol='rd'))
         return False
 
     def _move_update(self):
@@ -89,6 +108,8 @@ class Moves:
         p.sources = p2.sources
         if len(p2.sources) > 0:
             p2.sources[0].targets = [p]
+        else:
+            p2.targets[0].sources = [p]
 
     def _create_atoms_and_ports(self):
         """
@@ -118,7 +139,6 @@ class Moves:
 
         mp._find_matched(d_p)
 
-        print(d_a)
         self.lp_rp = self._get_LP_to_RP(d_a)
 
         Moves._delete_attr(d_p, 'port_name')  # clear generic port_names
@@ -132,7 +152,12 @@ class Moves:
 
     def _atoms_to_delete(self):
         """Return dict of Atoms and Ports objects"""
-        ports_to_del = [self.a, self.b, self.d, self.e, self.c1, self.c2]
+        if self.is_comb:
+            ports_to_del = [self.a, self.b, self.c1, self.c2, self.d]
+        elif self.is_prune:
+            ports_to_del = [self.a, self.b, self.c1, self.c2]
+        else:
+            ports_to_del = [self.a, self.b, self.d, self.e, self.c1, self.c2]
         atoms_to_del = [self.atom1, self.atom2]
         d_p = [(a.uid, a) for a in ports_to_del]
         d_a = [(a.uid, a) for a in atoms_to_del]
@@ -166,7 +191,7 @@ class Moves:
             text = tc.ftext('[', fcol='mg')
             text += tc.ftext(atom.uid, **t_cols[atom.atom])
             text += '  '
-            text += ','.join([tc.ftext(port.uid, **t_cols[port.atom])
+            text += ' '.join([tc.ftext(port.port_name, **t_cols[port.atom])
                               for port in atom.targets])
             text += tc.ftext(']', fcol='mg')
             return text
