@@ -18,6 +18,9 @@ from chemlambda import data
 from chemlambda import moves
 from chemlambda import topology
 from chemlambda import settings
+from chemlambda import textcolor
+
+tc = textcolor.TextColor()
 
 
 counter = data.Counter()
@@ -29,12 +32,13 @@ dicts = data.ChemlambdaDicts()
 # testing #
 hl = '-'
 vl = '│'
+vl = '|'
 
 
 def print_dict_atoms(dict_atoms, title=''):
     print("\033[92;1m{:^70}\033[0m".format(title))
-    head = " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>30} {}".format(
-            'key', vl, 'uid', vl, 'atom', vl, 'lno', vl, 'targets', vl)
+    head = "{:<10} {} {:<10} {} {:<10} {} {:>30} {}".format(
+             'uid', vl, 'atom', vl, 'lno', vl, 'targets', vl)
     print(hl*head.__len__())
     print(head)
     print(hl*head.__len__())
@@ -46,16 +50,16 @@ def print_dict_atoms(dict_atoms, title=''):
             lno = '---'
         atom = d['atom']
         targets = ', '.join([p.uid for p in d['targets']])
-        print(" {:<10} {} {:<10} {} {:<10} {} {:^10} {} {:>30} {}".format(
-            k, vl, uid, vl, atom, vl, lno, vl, targets, vl))
+        print("{:<10} {} {:<10} {} {:^10} {} {:>30} {}".format(
+            uid, vl, atom, vl, lno, vl, targets, vl))
 
     print(hl*head.__len__())
 
 
 def print_dict_ports(dict_ports, title=''):
     print("\033[92;1m{:^70}\033[0m".format(title))
-    head = " {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}".format(
-            'key', vl, 'uid', vl, 'atom', vl,
+    head = "{:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}".format(
+            'uid', vl, 'atom', vl,
             'parent', vl, 'sources', vl, 'targets', vl)
 
     print(hl*head.__len__())
@@ -69,8 +73,8 @@ def print_dict_ports(dict_ports, title=''):
         port_name = d['port_name']
         sources = ', '.join([p.uid for p in d['sources']])
         targets = ', '.join([p.uid for p in d['targets']])
-        print(" {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}"
-              .format(k, vl, uid, vl, atom, vl,
+        print("{:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}"
+              .format(uid, vl, atom, vl,
                       parent, vl, sources, vl, targets, vl))
 
     print(hl*head.__len__())
@@ -103,6 +107,11 @@ def intialise(mol_file):
     # clear original port_names
     moves.Moves._delete_attr(dicts.dict_ports, 'port_name')
 
+    # test output##############################
+    hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
+    cc = tc.ftext("\nIntial Config: " + str(counter.cycle_count), fcol='rd')
+    print(hr + "{:^80}".format(cc) + hr)
+    print_dict_atoms(dicts.dict_atoms, "Atoms")
     print_dict_ports(dicts.dict_ports, "Ports")
 
     counter.atom_count = list(dicts.dict_atoms.keys()).__len__()
@@ -134,7 +143,11 @@ def generate_cycle(*args):
 
     while counter.cycle_count < max_c:
         counter.cycle_count += 1
-        M = [moves.Moves(a, counter) for a in dicts.dict_atoms.values()
+
+
+        atoms_taken = []  # list to keep track of used atoms. Reset every cycle
+        M = [moves.Moves(a, counter, atoms_taken)
+             for a in dicts.dict_atoms.values()
              if a.atom in topology.moves]
         M = [m for m in M if m.valid_move]
         if len(M) == 0:
@@ -144,7 +157,14 @@ def generate_cycle(*args):
         M = [m._del_atoms_ports_from_dict(dicts.dict_atoms, dicts.dict_ports)
              for m in M]
 
+        # test output##############################
+        [print(m.lp_rp) for m in M]
+        hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
+        cc = tc.ftext("Cycle: " + str(counter.cycle_count), fcol='rd')
+        print(hr + "{:^80}".format(cc) + hr)
+        print_dict_atoms(dicts.dict_atoms, "Atoms")
         print_dict_ports(dicts.dict_ports, "Ports")
+        # ##############################
 
         if counter.cycle_count in range_list + [max_c]:
             M = [m._move_snapshot() for m in M]
@@ -154,9 +174,8 @@ def generate_cycle(*args):
 
 
 def main():
-    intialise('mol_files/small.mol')
+    intialise('mol_files/2.mol')
     generate_cycle(50)
-    print(dicts.moves_list[1][0].lp_rp)
     return 0
 
 if __name__ == '__main__':
