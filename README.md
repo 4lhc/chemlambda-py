@@ -3,5 +3,6 @@ A python port for [chemlabda-gui](https://github.com/chorasimilarity/chemlambda-
 
 ### Todo
 - [x] Define COMB moves
+- [ ] Deterministic moves
 - [ ] Write a formal mol file validator
 - [ ] HTML output
