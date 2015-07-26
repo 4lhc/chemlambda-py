@@ -12,6 +12,7 @@
 from chemlambda import settings
 from chemlambda import topology
 import copy
+# TODO: inflate sources
 
 
 class Atom:
@@ -94,7 +95,7 @@ class Port(Atom):
         Set targets p1 --> p2
         """
         if p1.atom[-1] == p2.atom[-1]:
-            # TODO: let textformat do this
+            # TODO: let textcolor do this
             print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
                   .format(p1.parent_atom.lno))
             return None
