@@ -1,3 +1,8 @@
+# TODO _write_to_mol_file()
+from chemlambda import topology
+import random
+import string
+
 class Counter:
     """
     Various (unnecessary) Counters
@@ -53,3 +58,38 @@ class ChemlambdaDicts:
         self.moves_list = {}
         self.dict_atoms = {}
         self.dict_ports = {}
+        self.atoms_taken = []
+
+    def _write_to_mol_file(self, cycle, file_name):
+        """Fetches a cycle snapshot from mega_atoms_list and writes it"""
+        used_port_name = set(['abc'])
+        def create_pn(used_port_name):
+            port_name = 'abc'
+            pn_len = 3
+            i = 0
+            if port_name in used_port_name:
+                while port_name not in used_port_name:
+                    if i > 10:
+                        pn_len += 1
+                    port_name = ''.join([random.choice(string.ascii_lowercase)
+                                         for i in range(pn_len)])
+                    i += 1
+            used_port_name.add(port_name)
+            return port_name
+
+        pn_dict = {}
+
+        def write_pn(p):
+            """write port_name for port p and it's target"""
+            return p
+
+# priority low
+        lines = []
+        d_c = self._get_snapshot(cycle)
+        d_p = {k:v for k, v in d_c.item()
+                if v.atom in ['mo', 'mi', 'ro', 'ri', 'lo', 'li', 'fo', 'fi'] }
+        #for k, v in d_p.items():
+
+        used_port_name.add(port_name)
+
+
