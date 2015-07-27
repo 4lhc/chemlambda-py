@@ -151,9 +151,10 @@ def generate_cycle(deterministic=True, *args):
 
         if deterministic:
             # If deterministic, sort according to weight
-            sorted(M, key=lambda m: m.weight)
+            M = sorted(M, key=lambda m: m.weight, reverse=True)
+            M = [m for m in M if m.move_name != '']
+            print([(m.weight, m.move_name) for m in M])
             # perfect! was looking for an apt usage of lambda :)
-            pass
 
         M = [m for m in M if m._is_valid(atoms_taken)]
 
