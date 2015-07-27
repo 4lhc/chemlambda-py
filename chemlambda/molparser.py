@@ -67,7 +67,7 @@ def _read_mol_file(mol_file, atom_count=0):
         port_list = mol['ports']
 
         d_a[uid] = atoms.Atom(uid=uid, atom=mol['atom'], lno=mol['lno'])
-        d_a[uid].targets = []  # ???
+        d_a[uid].targets = []
 
         for j, (atom, port_name) in enumerate(zip(atom_list, port_list)):
             puid = uid + "_" + str(j)
