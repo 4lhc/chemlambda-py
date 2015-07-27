@@ -38,14 +38,15 @@ class Moves:
         self.is_prune = False
         self.move_name = ''
         self.right_pattern = ''
-        self.valid_move = False  # set True if move is valid in topology
-        self.weight = 0  # pririty for deterministic cases
-        self._find_moves()  # keep this the last line in init
+        self.weight = -100  # pririty for deterministic cases
+        #valid_move is set to True if move is valid in topology
+        self.valid_move = self._find_moves()  # keep this the last line in init
 
     def _find_moves(self):
         """ Sets some variables and returns None"""
         move_dict = topology.moves[self.atom1.atom]
         for port_type in move_dict.keys():
+            # IMPPPP both lo and ro happens!!
             # sets c1 from outport set in topology.moves
             self.c1, = self.atom1._get_port_by_type(port_type)
             # this is important! c1 is always 'out' port and c2 'in'
@@ -60,8 +61,9 @@ class Moves:
                 else:
                     self.move_name = self.atom1.atom + "-" + self.atom2.atom
                 self.right_pattern = move_dict[port_type][self.atom2.atom]
-            else:
-                self.valid_move = False
+                self.weight = topology.weight[self.move_name]
+                return True
+        return False
 
     def _bind_ports(self):
         """
