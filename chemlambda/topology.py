@@ -126,7 +126,6 @@ weight = {
         'L-FO': 3,
         'L-FOE': 3,
         'FI-FO': 3,
-        'FO-FOE': 3,
         'L-A': 2,
         'FI-FOE': 1,
         'PRUNE': 0,
