@@ -119,7 +119,7 @@ def intialise(mol_file):
     dicts._take_snapshot(counter.cycle_count)
 
 
-def generate_cycle(*args):
+def generate_cycle(deterministic=False, *args):
     """
     generate_cycle([start, [step]], max=50)
     Generate cycles up to max_cycles [default 50] or when all moves are
@@ -143,15 +143,23 @@ def generate_cycle(*args):
 
     while counter.cycle_count < max_c:
         counter.cycle_count += 1
-
-
         atoms_taken = []  # list to keep track of used atoms. Reset every cycle
-        M = [moves.Moves(a, counter, atoms_taken)
+
+        M = [moves.Moves(a, counter)
              for a in dicts.dict_atoms.values()
              if a.atom in topology.moves]
-        M = [m for m in M if m.valid_move]
-        if len(M) == 0:
+
+        if deterministic:
+            # If deterministic, sort according to weight
+            sorted(M, key=lambda m: m.weight)
+            # perfect! was looking for an apt usage of lambda :)
+            pass
+
+        M = [m for m in M if m._is_valid(atoms_taken)]
+
+        if len(M) == 0:  # no moves
             break
+
         M = [m._add_atoms_ports_to_dict(dicts.dict_atoms, dicts.dict_ports)
              for m in M]
         M = [m._del_atoms_ports_from_dict(dicts.dict_atoms, dicts.dict_ports)
@@ -174,8 +182,8 @@ def generate_cycle(*args):
 
 
 def main():
-    intialise('mol_files/2.mol')
-    generate_cycle(50)
+    intialise('mol_files/small.mol')
+    generate_cycle(5)
     return 0
 
 if __name__ == '__main__':
