@@ -23,7 +23,7 @@ class Moves:
     find valid moves
     create required atoms
     """
-    def __init__(self, atom1, counter, atoms_taken):
+    def __init__(self, atom1, counter):
         """
             args: Atom objects
             atom1, atom2 are atoms in Left Pattern (LP)
@@ -34,10 +34,34 @@ class Moves:
         """
         self.atom1 = atom1
         self.counter = counter  # counter object
-        self.atoms_taken = atoms_taken
         self.is_comb = False  # this is for Pruning and COMBs
         self.is_prune = False
-        self.valid_move = self._find_moves()  # keep this the last line in init
+        self.move_name = ''
+        self.right_pattern = ''
+        self.valid_move = False  # set True if move is valid in topology
+        self.weight = 0  # pririty for deterministic cases
+        self._find_moves()  # keep this the last line in init
+
+    def _find_moves(self):
+        """ Sets some variables and returns None"""
+        move_dict = topology.moves[self.atom1.atom]
+        for port_type in move_dict.keys():
+            # sets c1 from outport set in topology.moves
+            self.c1, = self.atom1._get_port_by_type(port_type)
+            # this is important! c1 is always 'out' port and c2 'in'
+            self.c2, = self.c1.targets
+            self.atom2 = self.c2.parent_atom
+            if self.atom2.atom in move_dict[port_type].keys():
+                self.valid_move = True
+                if self.atom2.atom == 'T':
+                    self.move_name = 'PRUNE'
+                elif self.atom2.atom == 'Arrow':
+                    self.move_name = 'COMB'
+                else:
+                    self.move_name = self.atom1.atom + "-" + self.atom2.atom
+                self.right_pattern = move_dict[port_type][self.atom2.atom]
+            else:
+                self.valid_move = False
 
     def _bind_ports(self):
         """
@@ -68,37 +92,26 @@ class Moves:
                 self.is_comb = True
             pass
 
-    def _find_moves(self):
-        """ Sets some variables and returns boolean on match"""
-        move_dict = topology.moves[self.atom1.atom]
-        for port_type in move_dict.keys():
-            # finds the
-            self.c1, = self.atom1._get_port_by_type(port_type)
-            # this is important! c1 is always 'out' and c2 'in' port
-            self.c2, = self.c1.targets
-            self.atom2 = self.c2.parent_atom
-            if (self.atom2.atom in move_dict[port_type].keys() and
-                    self.atom1 not in self.atoms_taken and
-                    self.atom2 not in self.atoms_taken):
-                print(tc.ftext("[y] MOVE of " + self.atom1.uid + " >" +
-                               self.atom2.uid, fcol='gr'))
-                self.right_pattern = move_dict[port_type][self.atom2.atom]
-                self._bind_ports()
-                self._move_update()
-                self.atoms_taken += [self.atom1, self.atom2]  # atom1 needn't be added
-                return True
+    def _is_valid(self, atoms_taken):
+        """Return boolean"""
+        if (self.valid_move and
+                self.atom1 not in atoms_taken and
+                self.atom2 not in atoms_taken):
+            print(tc.ftext("[y] MOVE of " + self.atom1.uid + " >" +
+                           self.atom2.uid, fcol='gr'))
+            self._bind_ports()
+            self._move_update()
+            atoms_taken += [self.atom1, self.atom2]
+            return True
         print(tc.ftext("[n] MOVE of " + self.atom1.uid + " >" +
                        self.atom2.uid, fcol='rd'))
         return False
 
     def _move_update(self):
-        """
-        fill move uid, move name, LP_RP etc
-        """
+        """ fill move uid, move name, LP_RP etc """
         cc = self.counter.cycle_count
         mc = self.counter.move_count
         self.uid = str(cc) + '_' + str(mc)
-        self.move_name = self.atom1.atom + "-" + self.atom2.atom
         self.counter.move_count += 1
         return self
 
@@ -112,8 +125,7 @@ class Moves:
             p2.targets[0].sources = [p]
 
     def _create_atoms_and_ports(self):
-        """
-        """
+        """ """
         d_a, d_p = mp._read_mol_file(self.right_pattern,
                                      self.counter.atom_count)
         self.counter.atom_count += list(d_a.keys()).__len__()
