@@ -118,3 +118,17 @@ moves = {
 
             }
         }
+
+weight = {
+        'FO-FOE': 4,
+        'A-FO': 3,
+        'A-FOE': 3,
+        'L-FO': 3,
+        'L-FOE': 3,
+        'FI-FO': 3,
+        'FO-FOE': 3,
+        'L-A': 2,
+        'FI-FOE': 1,
+        'PRUNE': 0,
+        'COMB': -1
+        }
