@@ -1,3 +1,4 @@
-FO 1 2 c
-FOE c 3 4
-FO 2 x y
+L 1 2 3
+A 3 4 5
+FO 5 6 7
+FOE 7 8 9
