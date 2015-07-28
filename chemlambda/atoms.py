@@ -54,6 +54,8 @@ class Atom:
         for key, value in atom_copy.__dict__.items():
             if key == 'targets':
                 atom_copy.targets = [p.uid for p in value]
+            if key == 'sources':
+                atom_copy.sources = [p.uid for p in value]
             if key == 'parent_atom':
                 atom_copy.parent_atom = value.uid
         return atom_copy
@@ -66,6 +68,8 @@ class Atom:
         for key, value in atom_copy.__dict__.items():
             if key == 'targets':
                 atom_copy.targets = [atom_dict[uid] for uid in value]
+            if key == 'sources':
+                atom_copy.sources = [atom_dict[uid] for uid in value]
             if key == 'parent_atom':
                 atom_copy.parent_atom = atom_dict[value]
         return atom_copy
