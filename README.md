@@ -7,5 +7,5 @@ A python port for [chemlabda-gui](https://github.com/chorasimilarity/chemlambda-
 - [ ] Cleanup!
 - [ ] Write a formal mol file validator
 - [ ] output
---[x] sorted table stdout
----[ ] highlight atom
+- [x] sorted table stdout
+-  [ ] highlight atom
