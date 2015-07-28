@@ -13,9 +13,9 @@
 from chemlambda import topology
 from chemlambda import settings
 from chemlambda import molparser as mp
-from chemlambda import textcolor
+from chemlambda import textformat
 
-tc = textcolor.TextColor()
+tf = textformat.TextFormat()
 
 
 class Moves:
@@ -39,7 +39,7 @@ class Moves:
         self.move_name = ''
         self.right_pattern = ''
         self.weight = -100  # pririty for deterministic cases
-        #valid_move is set to True if move is valid in topology
+        # valid_move is set to True if move is valid in topology
         self.valid_move = self._find_moves()  # keep this the last line in init
 
     def _find_moves(self):
@@ -99,13 +99,13 @@ class Moves:
         if (self.valid_move and
                 self.atom1 not in atoms_taken and
                 self.atom2 not in atoms_taken):
-            print(tc.ftext("[y] MOVE of " + self.atom1.uid + " >" +
+            print(tf.ftext("[y] MOVE of " + self.atom1.uid + " >" +
                            self.atom2.uid, fcol='gr'))
             self._bind_ports()
             self._move_update()
             atoms_taken += [self.atom1, self.atom2]
             return True
-        print(tc.ftext("[n] MOVE of " + self.atom1.uid + " >" +
+        print(tf.ftext("[n] MOVE of " + self.atom1.uid + " >" +
                        self.atom2.uid, fcol='rd'))
         return False
 
@@ -202,19 +202,19 @@ class Moves:
         """
         def _atom_format(atom):
             """"""
-            text = tc.ftext('[', fcol='mg')
-            text += tc.ftext(atom.uid, **t_cols[atom.atom])
+            text = tf.ftext('[', fcol='mg')
+            text += tf.ftext(atom.uid, **t_cols[atom.atom])
             text += '  '
-            text += ' '.join([tc.ftext(port.port_name, **t_cols[port.atom])
+            text += ' '.join([tf.ftext(port.port_name, **t_cols[port.atom])
                               for port in atom.targets])
-            text += tc.ftext(']', fcol='mg')
+            text += tf.ftext(']', fcol='mg')
             return text
 
         t_cols = settings.atom_term_color
         d_a = [self.atom1, self.atom2]  # d_a is LP & a_a is RP
 
         lp_rp = ', '.join([_atom_format(a) for a in d_a])
-        lp_rp += tc.ftext(' --> ', fcol='wt')
+        lp_rp += tf.ftext(' --> ', fcol='wt')
         lp_rp += ', '.join([_atom_format(a) for a in a_a.values()])
         return lp_rp
 
