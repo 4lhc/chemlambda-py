@@ -6,6 +6,6 @@ A python port for [chemlabda-gui](https://github.com/chorasimilarity/chemlambda-
 - [x] Deterministic moves
 - [ ] Cleanup!
 - [ ] Write a formal mol file validator
-- [ ] output
+- [ ] HTML output
 - [x] sorted table stdout
--  [ ] highlight atom
+- [ ] highlight atom
