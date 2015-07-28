@@ -58,10 +58,8 @@ def intialise(mol_file):
     hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
     cc = tc.ftext("\nIntial Config: " + str(counter.cycle_count), fcol='rd')
     print(hr + "{:^80}".format(cc) + hr)
-    #print_dict_atoms(dicts.dict_atoms, "Atoms")
-    tf._output_tables(dicts.dict_atoms)
-    tf._output_tables(dicts.dict_ports, title="Ports", kind='port')
-    #print_dict_ports(dicts.dict_ports, "Ports")
+    tf._output_tables(dicts.dict_atoms, file_name='ams.txt')
+    tf._output_tables(dicts.dict_ports, title="Ports", kind='port', file_name='ams.txt')
 
     counter.atom_count = list(dicts.dict_atoms.keys()).__len__()
     counter.port_count = list(dicts.dict_ports.keys()).__len__()
@@ -131,7 +129,8 @@ def generate_cycle(deterministic=True, *args):
 
 
 def main():
-    intialise('mol_files/small.mol')
+    intialise('mol_files/1.mol')
+    #intialise('mol_files/small.mol')
     #intialise('mol_files/16_quine_A_L_FI_FO.mol')
     generate_cycle(5)
     return 0
