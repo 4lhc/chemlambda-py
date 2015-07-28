@@ -93,3 +93,7 @@ class ChemlambdaDicts:
         used_port_name.add(port_name)
 
 
+def _write_to_file(fname, text, mode='at'):
+    with open(fname, mode) as f:
+        f.write(text)
+
