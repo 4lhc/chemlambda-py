@@ -18,67 +18,14 @@ from chemlambda import data
 from chemlambda import moves
 from chemlambda import topology
 from chemlambda import settings
-from chemlambda import textcolor
+from chemlambda import textformat
 
-tc = textcolor.TextColor()
+tc = textformat.TextFormat()
+tf = textformat.TextOutput()
 
 
 counter = data.Counter()
 dicts = data.ChemlambdaDicts()
-
-
-
-################################################################################
-# testing #
-hl = '-'
-vl = '│'
-vl = '|'
-
-
-def print_dict_atoms(dict_atoms, title=''):
-    print("\033[92;1m{:^70}\033[0m".format(title))
-    head = "{:<10} {} {:<10} {} {:<10} {} {:>30} {}".format(
-             'uid', vl, 'atom', vl, 'lno', vl, 'targets', vl)
-    print(hl*head.__len__())
-    print(head)
-    print(hl*head.__len__())
-    for k, i in dict_atoms.items():
-        d = i.__dict__
-        uid = d['uid']
-        lno = d['lno']
-        if not lno:
-            lno = '---'
-        atom = d['atom']
-        targets = ', '.join([p.uid for p in d['targets']])
-        print("{:<10} {} {:<10} {} {:^10} {} {:>30} {}".format(
-            uid, vl, atom, vl, lno, vl, targets, vl))
-
-    print(hl*head.__len__())
-
-
-def print_dict_ports(dict_ports, title=''):
-    print("\033[92;1m{:^70}\033[0m".format(title))
-    head = "{:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}".format(
-            'uid', vl, 'atom', vl,
-            'parent', vl, 'sources', vl, 'targets', vl)
-
-    print(hl*head.__len__())
-    print(head)
-    print(hl*head.__len__())
-    for k, i in dict_ports.items():
-        d = i.__dict__
-        uid = d['uid']
-        atom = d['atom']
-        parent = d['parent_atom'].uid
-        port_name = d['port_name']
-        sources = ', '.join([p.uid for p in d['sources']])
-        targets = ', '.join([p.uid for p in d['targets']])
-        print("{:<10} {} {:<10} {} {:<10} {} {:<10} {} {:>20} {}"
-              .format(uid, vl, atom, vl,
-                      parent, vl, sources, vl, targets, vl))
-
-    print(hl*head.__len__())
-################################################################################
 
 
 def validate_mol_file(mol_file, ignore_errors=True):
@@ -111,8 +58,10 @@ def intialise(mol_file):
     hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
     cc = tc.ftext("\nIntial Config: " + str(counter.cycle_count), fcol='rd')
     print(hr + "{:^80}".format(cc) + hr)
-    print_dict_atoms(dicts.dict_atoms, "Atoms")
-    print_dict_ports(dicts.dict_ports, "Ports")
+    #print_dict_atoms(dicts.dict_atoms, "Atoms")
+    tf._output_tables(dicts.dict_atoms)
+    tf._output_tables(dicts.dict_ports, title="Ports", kind='port')
+    #print_dict_ports(dicts.dict_ports, "Ports")
 
     counter.atom_count = list(dicts.dict_atoms.keys()).__len__()
     counter.port_count = list(dicts.dict_ports.keys()).__len__()
@@ -152,9 +101,8 @@ def generate_cycle(deterministic=True, *args):
         if deterministic:
             # If deterministic, sort according to weight
             M = sorted(M, key=lambda m: m.weight, reverse=True)
-            M = [m for m in M if m.move_name != '']
-            print([(m.weight, m.move_name) for m in M])
             # perfect! was looking for an apt usage of lambda :)
+            M = [m for m in M if m.move_name != '']
 
         M = [m for m in M if m._is_valid(atoms_taken)]
 
@@ -167,12 +115,12 @@ def generate_cycle(deterministic=True, *args):
              for m in M]
 
         # test output##############################
-        [print(m.lp_rp) for m in M]
-        hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
-        cc = tc.ftext("Cycle: " + str(counter.cycle_count), fcol='rd')
-        print(hr + "{:^80}".format(cc) + hr)
-        print_dict_atoms(dicts.dict_atoms, "Atoms")
-        print_dict_ports(dicts.dict_ports, "Ports")
+        #[print(m.lp_rp) for m in M]
+        #hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
+        #cc = tc.ftext("Cycle: " + str(counter.cycle_count), fcol='rd')
+        #print(hr + "{:^80}".format(cc) + hr)
+        #print_dict_atoms(dicts.dict_atoms, "Atoms")
+        #print_dict_ports(dicts.dict_ports, "Ports")
         # ##############################
 
         if counter.cycle_count in range_list + [max_c]:
@@ -184,6 +132,7 @@ def generate_cycle(deterministic=True, *args):
 
 def main():
     intialise('mol_files/small.mol')
+    #intialise('mol_files/16_quine_A_L_FI_FO.mol')
     generate_cycle(5)
     return 0
 
