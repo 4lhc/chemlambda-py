@@ -11,8 +11,10 @@
 
 from chemlambda import settings
 from chemlambda import topology
+from chemlambda import textformat
 import copy
-# TODO: inflate sources
+
+tf = textformat.TextFormat()
 
 
 class Atom:
@@ -100,8 +102,10 @@ class Port(Atom):
         """
         if p1.atom[-1] == p2.atom[-1]:
             # TODO: let textcolor do this
-            print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
-                  .format(p1.parent_atom.lno))
+            ln = tf.ftext(p1.parent_atom.lno, fcol='gr')
+            tf.error("Port mismatch in mol file\n line {}".format(ln))
+            #print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
+                  #.format(p1.parent_atom.lno))
             return None
         p1.free = p2.free = 0  # ready for Freenodes
         if p1.atom[-1] == 'o':
