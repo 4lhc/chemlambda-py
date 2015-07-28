@@ -101,7 +101,7 @@ class Port(Atom):
         Set targets p1 --> p2
         """
         if p1.atom[-1] == p2.atom[-1]:
-            # TODO: let textcolor do this
+            # TODO: untested
             ln = tf.ftext(p1.parent_atom.lno, fcol='gr')
             tf.error("Port mismatch in mol file\n line {}".format(ln))
             #print("\033[91mError:\033[0m Port mismatch in mol file\nline \033[92m{}\033[0m"
