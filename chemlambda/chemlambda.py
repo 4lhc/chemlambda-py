@@ -19,6 +19,7 @@ from chemlambda import moves
 from chemlambda import topology
 from chemlambda import settings
 from chemlambda import textformat
+from collections import Counter
 
 tc = textformat.TextFormat()
 tf = textformat.TextOutput()
@@ -55,35 +56,29 @@ def intialise(mol_file):
     moves.Moves._delete_attr(dicts.dict_ports, 'port_name')
 
     # test output##############################
-    hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
-    cc = tc.ftext("\nIntial Config: " + str(counter.cycle_count), fcol='rd')
-    print(hr + "{:^80}".format(cc) + hr)
-    tf._output_tables(dicts.dict_atoms, file_name='ams.txt')
-    tf._output_tables(dicts.dict_ports, title="Ports", kind='port', file_name='ams.txt')
+    if settings.verbose:
+        hr = tc.ftext('\n' + "-"*79 + '\n', fcol='mg')
+        cc = tc.ftext("Intial Config: " + str(counter.cycle_count), fcol='cy')
+        print(hr + "{:^80}".format(cc) + hr)
+        out_file = ''  # print output to file if ut_file non empty
+        # Tip: pipe output to '|egrep --color "FROUT|$"' to highlight all FROUTs
+        if settings.show_tables:
+            tf._output_tables(dicts.dict_atoms, file_name=out_file)
+            tf._output_tables(dicts.dict_ports, title="Ports", kind='port',
+                              file_name=out_file)
 
     counter.atom_count = list(dicts.dict_atoms.keys()).__len__()
     counter.port_count = list(dicts.dict_ports.keys()).__len__()
     dicts._take_snapshot(counter.cycle_count)
 
 
-def generate_cycle(deterministic=True, *args):
+def generate_cycle(start=0, step=1, max_c=50,
+                   deterministic=settings.deterministic, out_file=''):
     """
     generate_cycle([start, [step]], max=50)
     Generate cycles up to max_cycles [default 50] or when all moves are
     exhausted
     """
-    if len(args) == 3:
-        start, step, max_c = args
-    elif len(args) == 2:
-        start, max_c = args
-        step = 1
-    elif len(args) == 1:
-        max_c, = args
-        start, step = [0, 1]
-    elif len(args) == 0:
-        start, step, max_c = [0, 1, 50]
-    else:
-        start, step, max_c = args[:3]
 
     # range_list = list(range(start, step, max_c))
     range_list = [i for i in range(start, max_c, step)]
@@ -103,22 +98,37 @@ def generate_cycle(deterministic=True, *args):
             M = [m for m in M if m.move_name != '']
 
         M = [m for m in M if m._is_valid(atoms_taken)]
-
-        if len(M) == 0:  # no moves
-            break
-
         M = [m._add_atoms_ports_to_dict(dicts.dict_atoms, dicts.dict_ports)
              for m in M]
         M = [m._del_atoms_ports_from_dict(dicts.dict_atoms, dicts.dict_ports)
              for m in M]
 
+
+        if len(M) == 0:  # no moves
+            break
+
         # test output##############################
-        #[print(m.lp_rp) for m in M]
-        #hr = tc.ftext('\n' + "-"*80 + '\n', fcol='rd')
-        #cc = tc.ftext("Cycle: " + str(counter.cycle_count), fcol='rd')
-        #print(hr + "{:^80}".format(cc) + hr)
-        #print_dict_atoms(dicts.dict_atoms, "Atoms")
-        #print_dict_ports(dicts.dict_ports, "Ports")
+        if settings.verbose:
+            hr = tc.ftext('\n' + "-"*79 + '\n', fcol='mg')
+            cc = tc.ftext(" Cycle: " + str(counter.cycle_count), fcol='cy')
+            aa = tc.ftext(" Atoms: " + str(len(dicts.dict_atoms)), fcol='cy')
+            pp = tc.ftext(" Ports: " + str(len(dicts.dict_ports)), fcol='cy')
+            mm = tc.ftext(" Moves: " + str(len(M)), fcol='cy')
+
+            print(hr +
+                  "\t{:^20}\t{:^20}\t{:^20}\t{:^20}".format(cc, aa, pp, mm) +
+                  hr)
+            if settings.show_move_count:
+                m_list = [m.move_name for m in M]
+                m_dict = Counter(m_list)
+                print('  '.join(['{}:{}'.format(k, v)
+                               for k, v in m_dict.items()]))
+            if settings.show_moves:
+                [print(m.lp_rp) for m in M]
+            if settings.show_tables:
+                tf._output_tables(dicts.dict_atoms, file_name=out_file)
+                tf._output_tables(dicts.dict_ports, title="Ports", kind='port',
+                                  file_name=out_file)
         # ##############################
 
         if counter.cycle_count in range_list + [max_c]:
@@ -129,10 +139,9 @@ def generate_cycle(deterministic=True, *args):
 
 
 def main():
-    intialise('mol_files/1.mol')
-    #intialise('mol_files/small.mol')
-    #intialise('mol_files/16_quine_A_L_FI_FO.mol')
-    generate_cycle(5)
+    mol_file = 'mol_files/fibo.mol'
+    intialise(mol_file)
+    generate_cycle(start=0, max_c=500, out_file='')
     return 0
 
 if __name__ == '__main__':
