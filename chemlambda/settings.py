@@ -15,12 +15,18 @@
 verbose = True  # set verbosity
 
 # The following takes effect only if verbose is True
-show_tables = False  # Print Atoms and Ports as tables
-show_moves = False  # Every moves per cycle
-show_move_count = True
-show_move_tries = False  # show attempts at moves and failures
+# Print Atoms and Ports as tables; Useless in huge molecules
+show_tables = False
 
-deterministic = True  # set False for random moves
+# Every moves per cycle
+show_moves = False
+show_move_count = True
+
+# show attempts at moves and failures
+show_move_tries = False
+
+# set False for random moves
+deterministic = True
 
 # atom (node) colors
 green_col = "#8CC152"
