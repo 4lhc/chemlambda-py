@@ -38,7 +38,7 @@ class Moves:
         self.is_prune = False
         self.move_name = ''
         self.right_pattern = ''
-        self.weight = -100  # pririty for deterministic cases
+        self.weight = -100  # priority for deterministic cases
         # valid_move is set to True if move is valid in topology
         self.valid_move = self._find_moves()  # keep this the last line in init
 
@@ -99,14 +99,16 @@ class Moves:
         if (self.valid_move and
                 self.atom1 not in atoms_taken and
                 self.atom2 not in atoms_taken):
-            print(tf.ftext("[y] MOVE of " + self.atom1.uid + " >" +
-                           self.atom2.uid, fcol='gr'))
+            if settings.show_move_tries:
+                print(tf.ftext("[y] MOVE of " + self.atom1.uid + " >" +
+                               self.atom2.uid, fcol='gr'))
             self._bind_ports()
             self._move_update()
             atoms_taken += [self.atom1, self.atom2]
             return True
-        print(tf.ftext("[n] MOVE of " + self.atom1.uid + " >" +
-                       self.atom2.uid, fcol='rd'))
+        if settings.show_move_tries:
+            print(tf.ftext("[n] MOVE of " + self.atom1.uid + " >" +
+                           self.atom2.uid, fcol='rd'))
         return False
 
     def _move_update(self):
@@ -153,7 +155,8 @@ class Moves:
 
         mp._find_matched(d_p)
 
-        self.lp_rp = self._get_LP_to_RP(d_a)
+        if settings.verbose:
+            self.lp_rp = self._get_LP_to_RP(d_a)
 
         Moves._delete_attr(d_p, 'port_name')  # clear generic port_names
         Moves._delete_attr(d_a, 'lno')
