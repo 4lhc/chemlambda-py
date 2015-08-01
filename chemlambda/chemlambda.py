@@ -57,9 +57,11 @@ def intialise(mol_file):
 
     # test output##############################
     if settings.verbose:
-        hr = tc.ftext('\n' + "-"*79 + '\n', fcol='mg')
+        hr = tc.ftext("-"*79, fcol='mg')
         cc = tc.ftext("Intial Config: " + str(counter.cycle_count), fcol='cy')
-        print(hr + "{:^80}".format(cc) + hr)
+        print(hr)
+        print("{:^80}".format(cc))
+        print(hr)
         out_file = ''  # print output to file if ut_file non empty
         # Tip: pipe output to '|egrep --color "FROUT|$"' to highlight all FROUTs
         if settings.show_tables:
@@ -109,20 +111,21 @@ def generate_cycle(start=0, step=1, max_c=50,
 
         # test output##############################
         if settings.verbose:
-            hr = tc.ftext('\n' + "-"*79 + '\n', fcol='mg')
+            hr = tc.ftext("-"*79, fcol='mg')
             cc = tc.ftext(" Cycle: " + str(counter.cycle_count), fcol='cy')
             aa = tc.ftext(" Atoms: " + str(len(dicts.dict_atoms)), fcol='cy')
             pp = tc.ftext(" Ports: " + str(len(dicts.dict_ports)), fcol='cy')
             mm = tc.ftext(" Moves: " + str(len(M)), fcol='cy')
 
-            print(hr +
-                  "\t{:^20}\t{:^20}\t{:^20}\t{:^20}".format(cc, aa, pp, mm) +
-                  hr)
+            print(hr)
+            print("\t{:^20}\t{:^20}\t{:^20}\t{:^20}".format(cc, aa, pp, mm))
+            print(hr)
             if settings.show_move_count:
                 m_list = [m.move_name for m in M]
                 m_dict = Counter(m_list)
-                print('  '.join(['{}:{}'.format(k, v)
-                               for k, v in m_dict.items()]))
+                m_count = '  '.join(['{}:{}'.format(k, v)
+                               for k, v in m_dict.items()])
+                print('{:^80}'.format(m_count))
             if settings.show_moves:
                 [print(m.lp_rp) for m in M]
             if settings.show_tables:
