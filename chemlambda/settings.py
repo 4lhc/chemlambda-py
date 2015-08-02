@@ -91,5 +91,3 @@ atom_term_color = {
         "FROUT": term_out_col,
         "FRIN": term_in_col
         }
-
-
