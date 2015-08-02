@@ -17,6 +17,7 @@ verbose = True  # set verbosity
 # The following takes effect only if verbose is True
 # Print Atoms and Ports as tables; Useless in huge molecules
 show_tables = False
+show_atom_count = True
 
 # Every moves per cycle
 show_moves = False
