@@ -3,12 +3,17 @@ A python port for [chemlabda-gui](https://github.com/chorasimilarity/chemlambda-
 
 ![Screencast](out.gif)
 
+The above screencast shows under-the-hood working of chemlambda-py. It's still
+under development. Core features are already implemented. Chemlambda-py is 
+intended to be used as a python package around which various flavours of chemlambda 
+can be build.
+
 ### Todo
 - [ ] Save cycles to file
 - [ ] Split cycles into chunks
 - [x] Define COMB moves
 - [x] Deterministic moves
-- [ ] Cleanup!
+- [ ] Clean-up!
 - [ ] Write a formal mol file validator
 - [ ] HTML output
 - [x] sorted table stdout
