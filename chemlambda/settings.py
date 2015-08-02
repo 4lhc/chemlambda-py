@@ -16,11 +16,11 @@ verbose = True  # set verbosity
 
 # The following takes effect only if verbose is True
 # Print Atoms and Ports as tables; Useless in huge molecules
-show_tables = False
+show_tables = True
 show_atom_count = True
 
 # Every moves per cycle
-show_moves = False
+show_moves = True
 show_move_count = True
 
 # show attempts at moves and failures
@@ -35,13 +35,19 @@ red_col = "#b80000"
 in_col = "#f0a900"
 out_col = "#91009a"
 term_col = "#222222"
-arrow_col = "#ffffff"
+arrow_col = "#f3f3f3"
 white_col = "#ffffff"
 
 # atom sizes
 port_size = 1
 mid_port_size = 2
 main_atom_size = 4
+atom_scale_factor = 3
+
+# template files
+# TODO portable file paths
+html_temp = 'templates/file.html'
+js_temp = 'templates/file.js'
 
 
 atom_color_size_dict = {
