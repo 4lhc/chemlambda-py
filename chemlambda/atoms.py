@@ -32,12 +32,19 @@ class Atom:
     def _remove_target(self, target):
         self.targets.remove(target)
 
-    def _get_color_and_size(self):
+    def _get_color(self):
         """_get_color_and_size()
             Return type: list
             [ color, size ]
         """
-        return settings.atom_color_size_dict[self.atom]
+        return settings.atom_color_size_dict[self.atom][0]
+
+    def _get_size(self):
+        """_get_color_and_size()
+            Return type: list
+            [ color, size ]
+        """
+        return settings.atom_color_size_dict[self.atom][1]
 
     def _get_port_by_type(self, port_kind):
         """ Return the port of the Atom from port atom kind """
