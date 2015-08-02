@@ -1,9 +1,10 @@
 # TODO _write_to_mol_file()
 from chemlambda import topology
+from collections import Counter
 import random
 import string
 
-class Counter:
+class ChemCounter:
     """
     Various (unnecessary) Counters
     """
@@ -21,6 +22,9 @@ class Counter:
         self.atom_count = 0
         self.port_count = 0
         self.move_count = 0
+
+        # move counts
+        self.total_moves_count = Counter({})
 
 
 class ChemlambdaDicts:
