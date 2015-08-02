@@ -25,7 +25,7 @@ tc = textformat.TextFormat()
 tf = textformat.TextOutput()
 
 
-counter = data.Counter()
+counter = data.ChemCounter()
 dicts = data.ChemlambdaDicts()
 
 
@@ -123,6 +123,7 @@ def generate_cycle(start=0, step=1, max_c=50,
             if settings.show_move_count:
                 m_list = [m.move_name for m in M]
                 m_dict = Counter(m_list)
+                counter.total_moves_count += m_dict
                 m_count = '  '.join(['{}:{}'.format(k, v)
                                for k, v in m_dict.items()])
                 print('{:^80}'.format(m_count))
@@ -139,12 +140,19 @@ def generate_cycle(start=0, step=1, max_c=50,
             dicts._take_snapshot(counter.cycle_count)
             dicts.moves_list[counter.cycle_count] = M
         # end of one cycle
+    if settings.verbose:
+        print(hr)
+        print(hr)
+        m_count = '  '.join(['{}:{}'.format(k, v)
+                       for k, v in counter.total_moves_count.items()])
+        print(m_count)
+        # print total move count
 
 
 def main():
     mol_file = 'mol_files/fibo.mol'
     intialise(mol_file)
-    generate_cycle(start=0, max_c=500, out_file='')
+    generate_cycle(start=4000, step=1000, max_c=5000, out_file='')
     return 0
 
 if __name__ == '__main__':
