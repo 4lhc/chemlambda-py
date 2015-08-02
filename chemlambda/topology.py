@@ -40,7 +40,10 @@ graph = {
 
 # Atom1, Atom2x forms the left pattern
 # port is the port of Atom1 through which legal moves are possible
-# 'ro' is the only valid port type for 'L' atoms
+# 'ro' is the only valid port type for 'L' atoms for normal moves, meanwhile a
+# COMB move is possible via L's 'lo'.
+#
+#
 # RP is written in the same notation as in:
 # [https://chorasimilarity.wordpress.com/2015/03/15/the-moves-of-chemlambda-v2-in-mol-format/]
 
