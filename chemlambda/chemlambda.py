@@ -74,8 +74,7 @@ def intialise(mol_file):
     dicts._take_snapshot(counter.cycle_count)
 
 
-def generate_cycle(start=0, step=1, max_c=50,
-                   deterministic=settings.deterministic, out_file=''):
+def generate_cycle(start=0, step=1, max_c=50, out_file=''):
     """
     generate_cycle([start, [step]], max=50)
     Generate cycles up to max_cycles [default 50] or when all moves are
@@ -93,7 +92,7 @@ def generate_cycle(start=0, step=1, max_c=50,
              for a in dicts.dict_atoms.values()
              if a.atom in topology.moves]
 
-        if deterministic:
+        if settings.deterministic:
             # If deterministic, sort according to weight
             M = sorted(M, key=lambda m: m.weight, reverse=True)
             # perfect! was looking for an apt usage of lambda :)
@@ -109,7 +108,6 @@ def generate_cycle(start=0, step=1, max_c=50,
         if len(M) == 0:  # no moves
             break
 
-        # test output##############################
         if settings.verbose:
             hr = tc.ftext("-"*79, fcol='mg')
             cc = tc.ftext(" Cycle: " + str(counter.cycle_count), fcol='cy')
@@ -120,33 +118,41 @@ def generate_cycle(start=0, step=1, max_c=50,
             print(hr)
             print("\t{:^20}\t{:^20}\t{:^20}\t{:^20}".format(cc, aa, pp, mm))
             print(hr)
+
+            if settings.show_atom_count:
+                c_dict = Counter([v.atom for k, v in dicts.dict_atoms.items()])
+                c_atoms = ' '.join(['{}:{}'.format(k, v)
+                                    for k, v in c_dict.items()])
+                print('Atoms Count:  {:<80}'.format(c_atoms))
             if settings.show_move_count:
                 m_list = [m.move_name for m in M]
                 m_dict = Counter(m_list)
                 counter.total_moves_count += m_dict
                 m_count = '  '.join(['{}:{}'.format(k, v)
-                               for k, v in m_dict.items()])
-                print('{:^80}'.format(m_count))
+                                    for k, v in m_dict.items()])
+                print('Moves Count:  {:<80}'.format(m_count))
             if settings.show_moves:
                 [print(m.lp_rp) for m in M]
             if settings.show_tables:
                 tf._output_tables(dicts.dict_atoms, file_name=out_file)
                 tf._output_tables(dicts.dict_ports, title="Ports", kind='port',
                                   file_name=out_file)
-        # ##############################
 
         if counter.cycle_count in range_list + [max_c]:
             M = [m._move_snapshot() for m in M]
             dicts._take_snapshot(counter.cycle_count)
             dicts.moves_list[counter.cycle_count] = M
         # end of one cycle
+
     if settings.verbose:
+        # print total move count
+        tm = tc.ftext("Total Moves: ", fcol='cy')
         print(hr)
+        print('{:^80}'.format(tm))
         print(hr)
         m_count = '  '.join(['{}:{}'.format(k, v)
-                       for k, v in counter.total_moves_count.items()])
+                            for k, v in counter.total_moves_count.items()])
         print(m_count)
-        # print total move count
 
 
 def main():
