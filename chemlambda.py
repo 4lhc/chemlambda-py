@@ -20,6 +20,7 @@ from chemlambda import topology
 from chemlambda import settings
 from chemlambda import textformat
 from collections import Counter
+import json
 
 tc = textformat.TextFormat()
 tf = textformat.TextOutput()
@@ -74,7 +75,8 @@ def intialise(mol_file):
     dicts._take_snapshot(counter.cycle_count)
 
 
-def generate_cycle(start=0, step=1, max_c=50, out_file=''):
+def generate_cycle(start=0, step=1, max_c=50, jsonAt=50, out_file='',
+                   html_out_file='out.html'):
     """
     generate_cycle([start, [step]], max=50)
     Generate cycles up to max_cycles [default 50] or when all moves are
@@ -138,10 +140,14 @@ def generate_cycle(start=0, step=1, max_c=50, out_file=''):
                 tf._output_tables(dicts.dict_ports, title="Ports", kind='port',
                                   file_name=out_file)
 
-        if counter.cycle_count in range_list + [max_c]:
+        if counter.cycle_count in range_list + [max_c] + [jsonAt]:
             M = [m._move_snapshot() for m in M]
             dicts._take_snapshot(counter.cycle_count)
             dicts.moves_list[counter.cycle_count] = M
+            print(counter.cycle_count)
+            if counter.cycle_count == jsonAt:
+                data._d3_output(dicts.mega_atoms_list[counter.cycle_count],
+                                html_out_file)
         # end of one cycle
 
     if settings.verbose:
@@ -156,9 +162,11 @@ def generate_cycle(start=0, step=1, max_c=50, out_file=''):
 
 
 def main():
-    mol_file = 'mol_files/fibo.mol'
+    mol_file = 'mol_files/lisfact_2_mod.mol'
+    html_out_file = mol_file.replace('.mol', '.html')
     intialise(mol_file)
-    generate_cycle(start=4000, step=1000, max_c=5000, out_file='')
+    generate_cycle(start=50, step=1, max_c=70, jsonAt=35, out_file='',
+                   html_out_file=html_out_file)
     return 0
 
 if __name__ == '__main__':

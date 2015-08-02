@@ -1,8 +1,11 @@
 # TODO _write_to_mol_file()
 from chemlambda import topology
+from chemlambda import settings
 from collections import Counter
+from string import Template
 import random
 import string
+import json
 
 class ChemCounter:
     """
@@ -101,3 +104,35 @@ def _write_to_file(fname, text, mode='at'):
     with open(fname, mode) as f:
         f.write(text)
 
+def _d3_output(d_a, out_file):
+    """ for d3 (TESTING)
+    {
+      "nodes": [{'atom': uid, 'size': size, 'color': color}, ......],
+      "links": [{'source': s#, 'target': t#}, ...]
+    }
+    """
+    node_list = [{'atom': v.uid,
+                  'size': v._get_size()*settings.atom_scale_factor,
+                  'color': v._get_color()} for k, v in d_a.items()]
+    node_list_search = [d['atom'] for d in node_list]
+
+
+    link_list = []
+    for i, nl_d in enumerate(node_list):
+        [link_list.append({'source': i,
+                           'target': node_list_search.index(t)})
+         for t in d_a[nl_d['atom']].targets]
+
+    js = json.dumps({"nodes": node_list, "links": link_list}, indent=4)
+
+    # reading template files
+    with open(settings.html_temp, 'r') as fp:
+        html_data = fp.read()
+    with open(settings.js_temp, 'r') as fp:
+        js_data = fp.read()
+
+    output = Template(html_data)
+    outdata = output.substitute(json_dump=js, javascript_dump=js_data)
+
+    with open(out_file, 'w') as fp:
+                fp.write(outdata)
