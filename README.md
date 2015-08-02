@@ -2,7 +2,7 @@
 A python port for [chemlabda-gui](https://github.com/chorasimilarity/chemlambda-gui/blob/gh-pages/dynamic/README.md)
 
 ### Todo
-- [ ] Save cycles to files 
+- [ ] Save cycles to file
 - [ ] Split cycles into chunks
 - [x] Define COMB moves
 - [x] Deterministic moves
