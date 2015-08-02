@@ -1,6 +1,7 @@
 # chemlambda-py
 A python port for [chemlabda-gui](https://github.com/chorasimilarity/chemlambda-gui/blob/gh-pages/dynamic/README.md)
 
+![Screencast](out.gif)
 
 ### Todo
 - [ ] Save cycles to file
