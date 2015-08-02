@@ -264,15 +264,15 @@ class TextOutput(TextFormat):
         """
         # key to calculate hr len
         hr_key = {
-                'uid': '{{:<10}} {}',
+                'uid': '{{:<15}} {}',
                 'atom': '{{:<5}} {}',
                 'sources': '{{:<15}} {}',
                 'targets': '{{:>40}} {}',
                 'lno': '{{:<3}} {}'
                 }
         if kind == 'atom':
-            columns = 'uid targets'
-            hl = 54
+            columns = 'uid targets lno'
+            hl = 59
         elif kind == 'port':
             columns = 'uid atom sources targets'
             hl = 78
