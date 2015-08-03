@@ -119,10 +119,28 @@ moves = {
 
                 }
 
+            },
+        "Arrow":
+        {
+            'mo':
+            {
+                'Arrow': ["Arrow a d"]
+
+                }
+            },
+        "FRIN":
+        {
+            'fo':
+            {
+                'T': [""],
+                'Arrow': ["FRIN d"]
+
+                }
             }
         }
 
 weight = {
+        'COMB': 5,
         'FO-FOE': 4,
         'A-FO': 3,
         'A-FOE': 3,
@@ -131,6 +149,5 @@ weight = {
         'FI-FO': 3,
         'L-A': 2,
         'FI-FOE': 1,
-        'PRUNE': 0,
-        'COMB': -1
+        'PRUNE': 0
         }
