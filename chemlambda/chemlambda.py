@@ -169,6 +169,7 @@ def generate_cycle(start=0, step=1, max_c=50, jsonAt=50, out_file='',
 def main():
     mol_file = 'mol_files/lisfact_2_mod.mol'
     #mol_file = 'mol_files/2.mol'
+
     html_out_file = mol_file.replace('.mol', '.html')
     intialise(mol_file, create_d3=False, html_out_file=html_out_file)
     generate_cycle(start=50, step=1, max_c=70, jsonAt=30, out_file='',
