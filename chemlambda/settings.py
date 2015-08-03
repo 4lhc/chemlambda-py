@@ -79,6 +79,7 @@ term_arrow_col = dict(fcol='wt', fattr='bold')
 term_term_col = dict(fcol='bl', fattr='bold')
 
 
+
 atom_term_color = {
         "mi": term_in_col,
         "li": term_in_col,
