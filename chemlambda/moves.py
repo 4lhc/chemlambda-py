@@ -36,6 +36,9 @@ class Moves:
         self.counter = counter  # counter object
         self.is_comb = False  # this is for Pruning and COMBs
         self.is_prune = False
+        self.is_cycomb = False  # Arrow -Arrow chains
+        self.is_FRINcomb = False  # FRIN-Arrow chain
+        self.is_FrinPrune = False  # FRIN-T chain
         self.move_name = ''
         self.right_pattern = ''
         self.weight = -100  # priority for deterministic cases
@@ -71,12 +74,32 @@ class Moves:
         c will be the port connected to another non-FR port for a particular
         Left Pattern.
         """
-        self.a, self.b = [p for p in self.atom1.targets
-                          if p.atom != self.c1.atom]
-        self.a.port_name = 'a'
-        self.b.port_name = 'b'
+        try:
+            # in case of Arrow chains and FRIN-Arrow
+            self.a, self.b = [p for p in self.atom1.targets
+                              if p.atom != self.c1.atom]
+            self.a.port_name = 'a'
+            self.b.port_name = 'b'
+        except ValueError:
+            if self.atom1.atom == 'FRIN' and self.atom2.atom == 'Arrow':
+                self.d, = [p for p in self.atom2.targets
+                           if p.atom != self.c2.atom]
+                self.d.port_name = 'd'
+                self.is_FRINcomb = True
+            if self.atom1.atom == 'FRIN' and self.atom2.atom == 'T':
+                self.is_FrinPrune = True
+            if self.atom1.atom == 'Arrow' and self.atom2.atom == 'Arrow':
+                self.a, = [p for p in self.atom1.targets
+                           if p.atom != self.c1.atom]
+                self.d, = [p for p in self.atom2.targets
+                           if p.atom != self.c2.atom]
+                self.a.port_name = 'a'
+                self.d.port_name = 'd'
+                self.is_cycomb = True
+
         self.c1.port_name = 'c'
         self.c2.port_name = 'c'
+
 
         try:
             # pruning/ comb moves don't have d and/or e
@@ -87,7 +110,9 @@ class Moves:
         except ValueError:
             if self.atom2.atom == 'T':
                 self.is_prune = True
-            if self.atom2.atom == 'Arrow':
+            if (self.atom2.atom == 'Arrow' and
+                    not self.is_cycomb and
+                    not self.is_FRINcomb):
                 self.d, = [p for p in self.atom2.targets
                            if p.atom != self.c2.atom]
                 self.d.port_name = 'd'
@@ -169,7 +194,14 @@ class Moves:
 
     def _atoms_to_delete(self):
         """Return dict of Atoms and Ports objects"""
-        if self.is_comb:
+        if self.is_cycomb:
+            ports_to_del = [self.a, self.d, self.c1, self.c2]
+        elif self.is_FrinPrune:
+            # keep this above is_prune:
+            ports_to_del = [self.c1, self.c2]
+        elif self.is_FRINcomb:
+            ports_to_del = [self.d, self.c1, self.c2]
+        elif self.is_comb:
             ports_to_del = [self.a, self.b, self.c1, self.c2, self.d]
         elif self.is_prune:
             ports_to_del = [self.a, self.b, self.c1, self.c2]

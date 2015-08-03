@@ -38,7 +38,7 @@ def validate_mol_file(mol_file, ignore_errors=True):
     print('test')
 
 
-def intialise(mol_file):
+def intialise(mol_file, create_d3=False, html_out_file='out.html'):
     """
     Read mol file and generate initial configuration of atoms, ports and their
     links
@@ -69,6 +69,11 @@ def intialise(mol_file):
             tf._output_tables(dicts.dict_atoms, file_name=out_file)
             tf._output_tables(dicts.dict_ports, title="Ports", kind='port',
                               file_name=out_file)
+
+    if create_d3:
+        dicts._take_snapshot(counter.cycle_count)
+        data._d3_output(dicts.mega_atoms_list[counter.cycle_count],
+                        html_out_file)
 
     counter.atom_count = list(dicts.dict_atoms.keys()).__len__()
     counter.port_count = list(dicts.dict_ports.keys()).__len__()
@@ -148,7 +153,7 @@ def generate_cycle(start=0, step=1, max_c=50, jsonAt=50, out_file='',
             if counter.cycle_count == jsonAt:
                 data._d3_output(dicts.mega_atoms_list[counter.cycle_count],
                                 html_out_file)
-        # end of one cycle
+        # end of cycle
 
     if settings.verbose:
         # print total move count
@@ -163,9 +168,10 @@ def generate_cycle(start=0, step=1, max_c=50, jsonAt=50, out_file='',
 
 def main():
     mol_file = 'mol_files/lisfact_2_mod.mol'
+    #mol_file = 'mol_files/2.mol'
     html_out_file = mol_file.replace('.mol', '.html')
-    intialise(mol_file)
-    generate_cycle(start=50, step=1, max_c=70, jsonAt=35, out_file='',
+    intialise(mol_file, create_d3=False, html_out_file=html_out_file)
+    generate_cycle(start=50, step=1, max_c=70, jsonAt=30, out_file='',
                    html_out_file=html_out_file)
     return 0
 
