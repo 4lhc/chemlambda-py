@@ -9,7 +9,7 @@ intended to be used as a python package around which various flavours of chemlam
 can be build.
 
 ![Animation](mol.gif)
-Molecule created by [mol_files/lisfact_2_mod.mol](/mol_files/lisfact_2_mod.htm)
+Molecule created by [mol_files/lisfact_2_mod.mol](https://raw.githubusercontent.com/4lhc/chemlambda-py/master/mol_files/lisfact_2_mod.html)
 for deteministic=True; cycle=30
 
 
