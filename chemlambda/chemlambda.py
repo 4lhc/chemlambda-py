@@ -185,7 +185,7 @@ def main():
     # settings.py
     intialise(mol_file, create_d3=False, html_out_file=html_out_file)
 
-    # set jsonAt parameter to the cycle, which's output as d3 graph is
+    # set jsonAt parameter to the cycle number, for which d3 graph output is
     # required.
     generate_cycle(start=50, step=1, max_c=70, jsonAt=56, out_file='',
                    html_out_file=html_out_file)
