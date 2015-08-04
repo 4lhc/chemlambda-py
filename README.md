@@ -10,7 +10,8 @@ can be build.
 
 ![Animation](mol.gif)
 
-Molecule created by [mol_files/lisfact_2_mod.mol](https://raw.githubusercontent.com/4lhc/chemlambda-py/master/mol_files/lisfact_2_mod.html)
+[Molecule](https://raw.githubusercontent.com/4lhc/chemlambda-py/master/mol_files/lisfact_2_mod.html) 
+created by [mol_files/lisfact_2_mod.mol](https://raw.githubusercontent.com/4lhc/chemlambda-py/master/mol_files/lisfact_2_mod.mol)
 for deteministic=True; cycle=30
 
 
