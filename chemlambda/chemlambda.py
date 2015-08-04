@@ -170,11 +170,23 @@ def generate_cycle(start=0, step=1, max_c=50, jsonAt=50, out_file='',
 
 
 def main():
-    mol_file = 'mol_files/lisfact_2_mod.mol'
-    mol_file = 'mol_files/fibo.mol'
+    # The current version of chemlambda-py doesn't work like the original
+    # chemlambda, it can produce a per-cycle output right now, but there's no
+    # rewrites as in the original version.
 
+    # mol files from mol_files/
+    # mol_file = 'mol_files/lisfact_2_mod.mol'
+    mol_file = 'mol_files/fibo.mol'
     html_out_file = mol_file.replace('.mol', '.html')
+
+    # set create_d3 parameter to True to create d3 visualisation of the intial
+    # molecule, that is cycle zero. The output html will be created inside the
+    # mol_files directory. The verbosity of stdout output can be set in
+    # settings.py
     intialise(mol_file, create_d3=False, html_out_file=html_out_file)
+
+    # set jsonAt parameter to the cycle, which's output as d3 graph is
+    # required.
     generate_cycle(start=50, step=1, max_c=70, jsonAt=56, out_file='',
                    html_out_file=html_out_file)
     return 0
