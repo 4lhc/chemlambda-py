@@ -7,12 +7,16 @@
 #  date   : Thu 23 Jul 2015 15:15:57 IST
 #  ver    :
 
+# This file is a hardlink of chemlambda/chemlambda.py, this exists at it's
+# current location for testing purpose.
+
 # Define wrapper functions
 
 # TODO: generate_output(start, [[step] end])
 # TODO: create_mol_file(45)
 
-#from chemlambda import validator
+
+# from chemlambda import validator
 from chemlambda import molparser as mp
 from chemlambda import data
 from chemlambda import moves
@@ -20,7 +24,6 @@ from chemlambda import topology
 from chemlambda import settings
 from chemlambda import textformat
 from collections import Counter
-import json
 
 tc = textformat.TextFormat()
 tf = textformat.TextOutput()
@@ -168,11 +171,11 @@ def generate_cycle(start=0, step=1, max_c=50, jsonAt=50, out_file='',
 
 def main():
     mol_file = 'mol_files/lisfact_2_mod.mol'
-    #mol_file = 'mol_files/2.mol'
+    mol_file = 'mol_files/fibo.mol'
 
     html_out_file = mol_file.replace('.mol', '.html')
     intialise(mol_file, create_d3=False, html_out_file=html_out_file)
-    generate_cycle(start=50, step=1, max_c=70, jsonAt=30, out_file='',
+    generate_cycle(start=50, step=1, max_c=70, jsonAt=56, out_file='',
                    html_out_file=html_out_file)
     return 0
 
